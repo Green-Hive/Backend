@@ -1,15 +1,27 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "type": "module",
+  "repository": "https://github.com/Green-Hive/Backend.git",
+  "author": "<clement.loiseau@epitech.eu>",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "node --watch --loader ts-node/esm ./src/server.ts"
   },
-  "repository": "git@perso:Green-Hive/Backend.git",
-  "author": "plegulluche <plegulluche@gmail.com>",
-  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.18",
+    "@types/node": "^20.8.2",
+    "prisma": "^5.3.1",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1"
+  },
   "dependencies": {
-    "express": "^4.18.2"
+    "@prisma/client": "^5.3.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
   }
 }
