@@ -8,36 +8,42 @@ const prisma = new PrismaClient();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('Welcome to Green Hive server !');
 });
 
-// app.get('/posts', async (req, res, next) => {
-//   try {
-//     const posts = await prisma.post.findMany({
-//       where: {published: true},
-//       orderBy: {createdAt: 'desc'},
-//     });
-//
-//     res.json(posts);
-//   } catch (error: any) {
-//     next(error.message);
-//   }
-// });
-//
-// app.post('/posts', async (req, res, next) => {
-//   try {
-//     const post = await prisma.post.create({
-//       data: {authorId: '7feacebe-4162-46bd-aab1-8a04aa42795a', ...req.body},
-//     });
-//
-//     res.json(post);
-//   } catch (error: any) {
-//     console.log(error.message);
-//
-//     next(error.message);
-//   }
-// });
+app.get('/users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany(
+      {
+        orderBy: {createdAt: 'desc'},
+      }
+    );
+    return res.json(users);
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(503);
+  }
+});
+
+app.post('/users', async (req, res) => {
+    try {
+      const {name, email} = req.body;
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+        },
+      });
+      return res.json(user);
+    } catch (error: any) {
+      console.log(error.message);
+      return res.status(400);
+    }
+  }
+);
+
+
 //
 // app.get('/posts/:id', async (req, res, next) => {
 //   try {
