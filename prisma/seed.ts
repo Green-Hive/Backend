@@ -1,26 +1,27 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
   const user = await prisma.user.upsert({
-    where: { email: 'user@example.com' },
+    where: {email: 'clem.loiseau@gmail.com'},
     update: {},
     create: {
-      email: 'user@example.com',
-      name: 'Jason',
+      email: 'clem.loiseau@gmail.com',
+      name: 'Clem',
+      password: 'password',
     },
   });
-  console.log({ user });
+  console.log({user});
 
-  const post = await prisma.post.create({
+  const hive = await prisma.hive.create({
     data: {
-      title: 'My first post',
-      content: 'Hello world!',
-      authorId: user.id,
+      title: 'Hive 1',
+      description: 'Hive 1 description',
+      userId: user.id,
     },
   });
-  console.log({ post });
+  console.log({hive});
 }
 
 main()
