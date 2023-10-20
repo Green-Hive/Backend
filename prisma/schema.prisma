@@ -26,9 +26,25 @@ model User {
 }
 
 model Hive {
-  id          String @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String
-  User        User   @relation(fields: [userId], references: [id])
+  User        User      @relation(fields: [userId], references: [id])
   userId      String
+  data        BeeData[]
+}
+
+model BeeData {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hiveId      String
+  hive        Hive     @relation(fields: [hiveId], references: [id])
+  temperature Float
+  humidity    Float
+  weight      Float
+  light       Float
+  battery     Float
+  lat         Float
+  lng         Float
 }
