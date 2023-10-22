@@ -10,6 +10,7 @@ async function main() {
       email: 'clem.loiseau@gmail.com',
       name: 'Clem',
       password: 'password',
+
     },
   });
   console.log({user});

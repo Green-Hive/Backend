@@ -21,27 +21,30 @@ app.get('/users', async (req, res) => {
     );
     return res.json(users);
   } catch (error: any) {
-    console.log(error.message);
-    return res.status(503);
+    console.error(error)
+    return res.status(500).json({error: error.message});
   }
 });
 
 app.post('/users', async (req, res) => {
-    try {
-      const {name, email} = req.body;
-      const user = await prisma.user.create({
-        data: {
-          name,
-          email,
-        },
-      });
-      return res.json(user);
-    } catch (error: any) {
-      console.log(error.message);
-      return res.status(400);
+  try {
+    const {name, email} = req.body;
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+      },
+    });
+    return res.json(user);
+  } catch (error) {
+    if (error.code === 'P2002' && error.meta.target.includes('email')) {
+      return res.status(400).json({error: "Email already exists."});
+    } else {
+      console.error(error);
+      return res.status(500).json({error: error.message});
     }
   }
-);
+});
 
 
 //
