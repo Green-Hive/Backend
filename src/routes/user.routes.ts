@@ -3,7 +3,7 @@ import {deleteUser, getAllUsers, getUser, patchUser, postUser} from '../controll
 
 const routes = Router();
 
-routes.post('/z', postUser);
+routes.post('/', postUser);
 routes.get('/', getAllUsers);
 routes.get('/:id', getUser);
 routes.patch('/:id', patchUser);

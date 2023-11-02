@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
+import prisma from "../services/prisma";
 
-const prisma = new PrismaClient();
 
 export const postUser = async (req: Request, res: Response) => {
     try {
