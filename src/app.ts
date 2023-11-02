@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express from 'express';
+import express, {Request, Response} from 'express';
 import {PrismaClient} from '@prisma/client';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger.json';
@@ -13,9 +13,9 @@ app.use(express.urlencoded({extended: true}));
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
-app.post('/users', async (req, res) => {
+app.post('/users', async (req: Request, res: Response) => {
   try {
-    const {name, email} = req.body;
+    const {name, email}: { name: string, email: string } = req.body;
     const user = await prisma.user.create({
       data: {
         name,
@@ -28,12 +28,12 @@ app.post('/users', async (req, res) => {
       return res.status(400).json({error: "Email already exists."});
     } else {
       console.error(error);
-      return res.status(500).json({error: error.message});
+      return res.status(400).json({error: error.message});
     }
   }
 });
 
-app.get('/users', async (req, res) => {
+app.get('/users', async (_req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany(
       {
@@ -48,7 +48,7 @@ app.get('/users', async (req, res) => {
 });
 
 
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id', async (req: Request, res: Response) => {
   try {
     const {id} = req.params;
     const user = await prisma.user.findUnique({
@@ -57,14 +57,14 @@ app.get('/users/:id', async (req, res) => {
     return res.json(user);
   } catch (error: any) {
     console.error(error)
-    return res.status(500).json({error: error.message});
+    return res.status(400).json({error: error.message});
   }
 });
 
-app.patch('/users/:id', async (req, res, next) => {
+app.patch('/users/:id', async (req: Request, res: Response) => {
   try {
     const {id} = req.params;
-    const {name, email} = req.body;
+    const {name, email}: { name: string, email: string } = req.body;
     const user = await prisma.user.update({
       where: {id: id},
       data: {name, email},
@@ -72,18 +72,19 @@ app.patch('/users/:id', async (req, res, next) => {
     return res.json(user);
   } catch (error: any) {
     console.error(error)
-    return res.status(500).json({error: error.message});
+    return res.status(400).json({error: error.message});
   }
 });
 
-app.delete('/users/:id', async (req, res, next) => {
+app.delete('/users/:id', async (req: Request, res: Response) => {
   try {
     await prisma.user.delete({
       where: {id: req.params.id},
     });
     res.json({message: 'User deleted successfully'});
   } catch (error: any) {
-    next(error.message);
+    console.error(error)
+    return res.status(400).json({error: error.message});
   }
 });
 //
