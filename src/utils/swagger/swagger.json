@@ -13,6 +13,9 @@
   "paths": {
     "/api/users/": {
       "post": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -23,11 +26,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "string"
+                  "example": "my name"
                 },
                 "email": {
                   "type": "string",
-                  "example": "string"
+                  "example": "example@gmail.com"
                 }
               }
             }
@@ -43,6 +46,9 @@
         }
       },
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -56,6 +62,9 @@
     },
     "/api/users/{id}": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -75,6 +84,9 @@
         }
       },
       "patch": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -91,11 +103,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "string"
+                  "example": "my name"
                 },
                 "email": {
                   "type": "string",
-                  "example": "string"
+                  "example": "example@gmail.com"
                 }
               }
             }
@@ -111,6 +123,144 @@
         }
       },
       "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/": {
+      "post": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "my hive"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/hives/{id}": {
+      "get": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "my hive"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "my hive description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Hives"
+        ],
         "description": "",
         "parameters": [
           {
