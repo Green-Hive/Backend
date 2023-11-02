@@ -20,6 +20,13 @@ export const postUser = async (req: Request, res: Response) => {
             return res.status(400).json({error: error.message});
         }
     }
+    /* #swagger.parameters['body'] = {
+      in: 'body',
+      schema: {
+          name: 'string',
+          email: 'string'
+      }
+ } */
 };
 export const getAllUsers = async (_req: Request, res: Response) => {
     try {
@@ -61,6 +68,13 @@ export const patchUser = async (req: Request, res: Response) => {
         console.error(error)
         return res.status(400).json({error: error.message});
     }
+    /* #swagger.parameters['body'] = {
+       in: 'body',
+       schema: {
+           name: 'string',
+           email: 'string'
+       }
+  } */
 };
 
 export const deleteUser = async (req: Request, res: Response) => {

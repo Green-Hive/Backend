@@ -22,10 +22,12 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -88,10 +90,12 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
