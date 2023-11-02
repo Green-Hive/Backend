@@ -21,25 +21,27 @@ model User {
   name      String
   password  String?
   createdAt DateTime @default(now())
-  posts     Hive[]
+  updatedAt DateTime @updatedAt
+  hive      Hive[]
   role      Role     @default(USER)
 }
 
 model Hive {
   id          String    @id @default(uuid())
   title       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   description String    @default("")
-  User        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   userId      String
-  data        BeeData[]
+  beeData     BeeData[]
 }
 
 model BeeData {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  hiveId      String
   hive        Hive     @relation(fields: [hiveId], references: [id])
+  hiveId      String
   temperature Float    @default(0)
   humidity    Float    @default(0)
   weight      Float    @default(0)
