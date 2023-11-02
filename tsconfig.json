@@ -6,6 +6,8 @@
     "moduleResolution": "NodeNext",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true
   }
 }
