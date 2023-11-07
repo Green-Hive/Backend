@@ -14,7 +14,7 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise
 
   const authorizeUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: 'https://www.googleapis.com/auth/userinfo.profile openid',
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
     prompt: 'consent'
   });
 
@@ -24,7 +24,7 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise
 export const getGoogleAuthInfo = async (req: Request, res: Response) => {
   const code = req.query.code as string
 
-  async function getUserData(access_token: string) {
+  async function getUserData(access_token: string, id_token: string) {
     const response = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`);
     return response.json();
   }
@@ -38,11 +38,15 @@ export const getGoogleAuthInfo = async (req: Request, res: Response) => {
     const tokenResponse = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokenResponse.tokens);
     const userTokens = oAuth2Client.credentials;
-    const userInfo = await getUserData(userTokens.access_token);
-    console.log('userTokens=', userTokens);
-    console.log("====================================");
+    // console.log('userTokens=', userTokens);
+    const userInfo = await getUserData(userTokens.access_token, userTokens.id_token);
     console.log('userInfo=', userInfo);
-    
+    console.log("====================================");
+    console.log('id=', userInfo.id);
+    console.log('email=', userInfo.email);
+    console.log('name=', userInfo.name);
+    console.log('picture=', userInfo.picture);
+    res.send("ok")
 
   } catch (error: any) {
     console.error(error);

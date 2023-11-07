@@ -5,16 +5,20 @@ import swaggerDocument from './utils/swagger/swagger.json';
 import userRoutes from "./routes/user.routes.ts";
 import hiveRoutes from "./routes/hive.routes.ts";
 import authRoutes from "./routes/auth.routes.ts";
+import cors from "cors";
+
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+
 const corsOptions = {
   origin: 'http://localhost:5173',
   credentials: true,
 };
+app.use(cors(corsOptions));
 
 // app.use("/api/users", checkAuthentication, checkAuthorization, userRoutes);
 // app.use("/api/hives", checkAuthentication, hiveRoutes);
