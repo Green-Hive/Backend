@@ -4,16 +4,26 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger/swagger.json';
 import userRoutes from "./routes/user.routes.ts";
 import hiveRoutes from "./routes/hive.routes.ts";
+import authRoutes from "./routes/auth.routes.ts";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
+// app.use("/api/users", checkAuthentication, checkAuthorization, userRoutes);
+// app.use("/api/hives", checkAuthentication, hiveRoutes);
+// Routes
+
 app.use("/api/users", userRoutes)
 app.use("/api/hives", hiveRoutes)
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use((_req, res) => res.status(404).json({error: "Not found"}));
+app.use("/api/auth", authRoutes)
+app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 //
