@@ -1,6 +1,7 @@
 import 'dotenv/config';
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {OAuth2Client} from "google-auth-library";
+import {postUser} from "./user.controller.ts";
 
 export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise<void> => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -21,7 +22,7 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise
   res.json({url: authorizeUrl});
 }
 
-export const getGoogleAuthInfo = async (req: Request, res: Response) => {
+export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.query.code as string
 
   async function getUserData(access_token: string, id_token: string) {
@@ -38,16 +39,16 @@ export const getGoogleAuthInfo = async (req: Request, res: Response) => {
     const tokenResponse = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokenResponse.tokens);
     const userTokens = oAuth2Client.credentials;
-    // console.log('userTokens=', userTokens);
     const userInfo = await getUserData(userTokens.access_token, userTokens.id_token);
     console.log('userInfo=', userInfo);
-    console.log("====================================");
-    console.log('id=', userInfo.id);
-    console.log('email=', userInfo.email);
-    console.log('name=', userInfo.name);
-    console.log('picture=', userInfo.picture);
-    res.send("ok")
 
+    const userToCreate = {
+      name: userInfo.name,
+      email: userInfo.email,
+      id: userInfo.id,
+    };
+    await postUser({body: userToCreate}, res);
+    next();
   } catch (error: any) {
     console.error(error);
     return res.status(400).json({error: error.message});

@@ -7,12 +7,10 @@ import hiveRoutes from "./routes/hive.routes.ts";
 import authRoutes from "./routes/auth.routes.ts";
 import cors from "cors";
 
-
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
 
 const corsOptions = {
   origin: 'http://localhost:5173',

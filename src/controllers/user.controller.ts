@@ -1,13 +1,21 @@
 import {Request, Response} from "express";
 import prisma from "../services/prisma";
 
-export const postUser = async (req: Request, res: Response) => {
+export const postUser = async (req: any, res: Response) => {
+  const {name, email, id}: { name: string, email: string, id: string } = req.body;
+
   try {
-    const {name, email}: { name: string, email: string } = req.body;
+    if (id) {
+      const existingUser = await prisma.user.findFirst({
+        where: {id},
+      });
+      if (existingUser) return res.send("already exist")
+    }
+
     const user = await prisma.user.create({
-      data: {name, email,},
+      data: {name, email, id},
     });
-    return res.status(200).json(user);
+    return res.status(201).json(user);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('email')) {
       return res.status(400).json({error: "Email already exists."});
@@ -28,11 +36,9 @@ export const postUser = async (req: Request, res: Response) => {
 
 export const getAllUsers = async (_req: Request, res: Response) => {
   try {
-    const users = await prisma.user.findMany(
-      {
-        orderBy: {createdAt: 'desc'},
-      }
-    );
+    const users = await prisma.user.findMany({
+      orderBy: {createdAt: 'desc'},
+    });
     return res.status(200).json(users);
   } catch (error: any) {
     console.error(error)
@@ -42,8 +48,9 @@ export const getAllUsers = async (_req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
   try {
-    const {id} = req.params;
     const user = await prisma.user.findUnique({
       where: {id: id},
     });
@@ -56,9 +63,10 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const patchUser = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {name, email}: { name: string, email: string } = req.body;
+
   try {
-    const {id} = req.params;
-    const {name, email}: { name: string, email: string } = req.body;
     const user = await prisma.user.update({
       where: {id: id},
       data: {name, email},
@@ -79,8 +87,9 @@ export const patchUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
   try {
-    const {id} = req.params;
     await prisma.user.delete({where: {id}});
     res.status(200).send("User deleted");
   } catch (error: any) {

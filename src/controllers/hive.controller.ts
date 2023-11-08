@@ -2,8 +2,9 @@ import {Request, Response} from "express";
 import prisma from "../services/prisma";
 
 export const postHive = async (req: Request, res: Response) => {
+  const {userId, title}: { userId: string, title: string } = req.body;
+
   try {
-    const {userId, title}: { userId: string, title: string } = req.body;
     const hive = await prisma.hive.create({
       data: {userId, title,},
     });
@@ -24,11 +25,9 @@ export const postHive = async (req: Request, res: Response) => {
 
 export const getAllHives = async (_req: Request, res: Response) => {
   try {
-    const hives = await prisma.hive.findMany(
-      {
-        orderBy: {createdAt: 'desc'},
-      }
-    );
+    const hives = await prisma.hive.findMany({
+      orderBy: {createdAt: 'desc'},
+    });
     return res.status(200).json(hives);
   } catch (error: any) {
     console.error(error)
@@ -38,8 +37,9 @@ export const getAllHives = async (_req: Request, res: Response) => {
 };
 
 export const getHive = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
   try {
-    const {id} = req.params;
     const hive = await prisma.hive.findUnique({
       where: {id},
     });
@@ -52,9 +52,10 @@ export const getHive = async (req: Request, res: Response) => {
 };
 
 export const patchHive = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {title, description} = req.body;
+
   try {
-    const {id} = req.params;
-    const {title, description} = req.body;
     const hive = await prisma.hive.update({
       where: {id},
       data: {title, description},
@@ -76,8 +77,9 @@ export const patchHive = async (req: Request, res: Response) => {
 };
 
 export const deleteHive = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
   try {
-    const {id} = req.params;
     await prisma.hive.delete({where: {id}});
     res.status(200).send("Hive deleted");
   } catch (error: any) {
