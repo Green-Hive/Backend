@@ -1,6 +1,7 @@
 import app from "./app.ts";
 import figlet from "figlet";
 
+//Design just to show the url of the swagger documentation
 import('terminal-link').then((terminalLink) => {
   const styledText = '\x1b[1m\x1b[32m' + 'Server running at: ' + '\x1b[0m';
   const PORT = process.env.PORT || 4000;

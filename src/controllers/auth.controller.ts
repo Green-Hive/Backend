@@ -1,9 +1,17 @@
 import 'dotenv/config';
 import {NextFunction, Request, Response} from "express";
 import {OAuth2Client} from "google-auth-library";
-import {postUser} from "./user.controller.ts";
+import prisma from "../services/prisma.ts";
 
-export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise<void> => {
+declare module 'express' {
+  interface Request {
+    session: {
+      userId?: string;
+    };
+  }
+}
+
+export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Referrer-Policy", "no-referrer-when-downgrade");
 
@@ -15,11 +23,11 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response): Promise
 
   const authorizeUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+    scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
     prompt: 'consent'
   });
 
-  res.json({url: authorizeUrl});
+  return res.json({url: authorizeUrl});
 }
 
 export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextFunction) => {
@@ -40,15 +48,21 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
     oAuth2Client.setCredentials(tokenResponse.tokens);
     const userTokens = oAuth2Client.credentials;
     const userInfo = await getUserData(userTokens.access_token, userTokens.id_token);
-    console.log('userInfo=', userInfo);
 
-    const userToCreate = {
-      name: userInfo.name,
-      email: userInfo.email,
-      id: userInfo.id,
-    };
-    await postUser({body: userToCreate}, res);
-    next();
+    const {name, email, id} = userInfo;
+    const existingUser = await prisma.user.findFirst({
+      where: {email},
+    });
+
+    if (!existingUser) {
+      await prisma.user.create({
+        data: {name, email, id},
+      });
+      console.log('Google user created\n!');
+    } else console.log('User already exist\n');
+
+    req.session.userId = id;
+    return res.redirect(process.env.CLIENT_URL);
   } catch (error: any) {
     console.error(error);
     return res.status(400).json({error: error.message});

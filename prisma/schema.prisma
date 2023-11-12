@@ -15,11 +15,18 @@ enum Role {
   USER
 }
 
+model Session {
+  sid    String   @id @default(uuid()) @db.VarChar(255)
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
   password  String?
+  // provider  String   @default("local")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   hive      Hive[]

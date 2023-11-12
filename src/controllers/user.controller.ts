@@ -5,13 +5,6 @@ export const postUser = async (req: any, res: Response) => {
   const {name, email, id}: { name: string, email: string, id: string } = req.body;
 
   try {
-    if (id) {
-      const existingUser = await prisma.user.findFirst({
-        where: {id},
-      });
-      if (existingUser) return res.send("already exist")
-    }
-
     const user = await prisma.user.create({
       data: {name, email, id},
     });
