@@ -4,14 +4,6 @@ import {OAuth2Client} from "google-auth-library";
 import prisma from "../services/prisma.ts";
 import {Provider} from "@prisma/client";
 
-declare module 'express' {
-  interface Request {
-    session: {
-      userId?: string;
-    };
-  }
-}
-
 export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
   res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
   res.header("Referrer-Policy", "no-referrer-when-downgrade");

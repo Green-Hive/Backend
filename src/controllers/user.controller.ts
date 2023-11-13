@@ -1,12 +1,13 @@
 import {Request, Response} from "express";
 import prisma from "../services/prisma";
+import {Provider} from "@prisma/client";
 
 export const postUser = async (req: any, res: Response) => {
   const {name, email, id}: { name: string, email: string, id: string } = req.body;
 
   try {
     const user = await prisma.user.create({
-      data: {name, email, id},
+      data: {name, email, id, provider: Provider.LOCAL},
     });
     return res.status(201).json(user);
   } catch (error: any) {

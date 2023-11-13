@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import {getGoogleAuthInfo, requestGoogleAuthUrl} from "../controllers/authGoogle.controller.ts";
+import {logout} from "../controllers/authResolver.controller.ts";
 
 const routes = Router();
 
@@ -9,5 +10,5 @@ routes.get('/google/callback', getGoogleAuthInfo);
 // routes.post('/register',);
 // routes.post('/login',);
 
-routes.post('/logout',);
+routes.post('/logout', logout);
 export default routes;
