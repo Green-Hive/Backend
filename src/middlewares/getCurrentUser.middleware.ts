@@ -7,7 +7,7 @@ declare module 'express-session' {
   }
 }
 
-async function stockUserLocally(req: Request, res: Response, next: NextFunction): Promise<void> {
+async function getCurrentUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const {userId} = req.session;
 
   if (userId) {
@@ -21,4 +21,4 @@ async function stockUserLocally(req: Request, res: Response, next: NextFunction)
   return next();
 }
 
-export default stockUserLocally;
+export default getCurrentUser;

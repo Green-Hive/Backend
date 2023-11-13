@@ -2,6 +2,7 @@ import 'dotenv/config';
 import {NextFunction, Request, Response} from "express";
 import {OAuth2Client} from "google-auth-library";
 import prisma from "../services/prisma.ts";
+import {Provider} from "@prisma/client";
 
 declare module 'express' {
   interface Request {
@@ -33,7 +34,7 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
 export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextFunction) => {
   const code = req.query.code as string
 
-  async function getUserData(access_token: string, id_token: string) {
+  const getUserData = async (access_token: string, id_token: string) => {
     const response = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`);
     return response.json();
   }
@@ -47,19 +48,19 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
     const tokenResponse = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokenResponse.tokens);
     const userTokens = oAuth2Client.credentials;
-    const userInfo = await getUserData(userTokens.access_token, userTokens.id_token);
 
-    const {name, email, id} = userInfo;
+    const {name, email, id} = await getUserData(userTokens.access_token, userTokens.id_token);
+
     const existingUser = await prisma.user.findFirst({
       where: {email},
     });
 
     if (!existingUser) {
       await prisma.user.create({
-        data: {name, email, id},
+        data: {name, email, id, provider: Provider.GOOGLE},
       });
       console.log('Google user created\n!');
-    } else console.log('User already exist\n');
+    } else console.error('User already exists\n!');
 
     req.session.userId = id;
     return res.redirect(process.env.CLIENT_URL);

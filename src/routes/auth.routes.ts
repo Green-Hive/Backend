@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {getGoogleAuthInfo, requestGoogleAuthUrl} from "../controllers/auth.controller.ts";
+import {getGoogleAuthInfo, requestGoogleAuthUrl} from "../controllers/authGoogle.controller.ts";
 
 const routes = Router();
 

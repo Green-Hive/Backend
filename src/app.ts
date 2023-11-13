@@ -9,7 +9,7 @@ import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import PgSession from 'connect-pg-simple';
-import stockUserLocally from "./middlewares/stockUserLocal.middleware.ts";
+import getCurrentUser from "./middlewares/getCurrentUser.middleware.ts";
 
 const app = express();
 const corsOptions = {
@@ -18,7 +18,6 @@ const corsOptions = {
 };
 
 //INITIALIZE//
-
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -32,11 +31,13 @@ app.use(
     store: new (PgSession(session))({
       conString: process.env.DATABASE_URL,
       tableName: 'Session',
+      pruneSessionInterval: 60, // 1 min
+      // pruneSessionInterval: 3600, // delete expired sessions every 1 h
     }),
     cookie: {
       secure: false,
       maxAge: 60000, // 1 min
-      // maxAge: 3600000, // 1 h
+      // maxAge: 7200000, // 2 h
       httpOnly: true,
       domain: "localhost",
       path: "/",
@@ -44,21 +45,23 @@ app.use(
     },
   })
 );
+
 //MIDDLEWARES//
-app.use(stockUserLocally);
+app.use(getCurrentUser);
 // app.use("/api/users", checkAuthentication, checkAuthorization, userRoutes);
 // app.use("/api/hives", checkAuthentication, hiveRoutes);
 app.get('/me', (req, res) => {
+  const {userInfo} = res.locals;
+
   console.log("session=", req.session, "\n")
   console.log("locals=", res.locals, "\n")
   console.log("=====================================")
-  const {userInfo} = res.locals;
 
   if (req.session.userId) {
     const userId = req.session.userId;
-    res.status(200).json({message: "User is logged in", userId, userInfo});
+    res.status(200).json({message: "User is logged", userId, userInfo});
   } else {
-    res.status(404).json({message: "User is not logged in"});
+    res.status(404).json({message: "User is not logged"});
   }
 });
 
