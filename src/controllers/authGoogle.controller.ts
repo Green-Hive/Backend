@@ -13,7 +13,7 @@ declare module 'express' {
 }
 
 export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
   res.header("Referrer-Policy", "no-referrer-when-downgrade");
 
   const oAuth2Client = new OAuth2Client(
@@ -59,8 +59,8 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
       await prisma.user.create({
         data: {name, email, id, provider: Provider.GOOGLE},
       });
-      console.log('Google user created\n!');
-    } else console.error('User already exists\n!');
+      console.log('Google user created!');
+    } else console.error('User exists!');
 
     req.session.userId = id;
     return res.redirect(process.env.CLIENT_URL);
