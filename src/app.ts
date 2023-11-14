@@ -33,12 +33,11 @@ app.use(
       conString: process.env.DATABASE_URL,
       tableName: 'Session',
       pruneSessionInterval: 60, // 1 min
-      // pruneSessionInterval: 3600, // delete expired sessions every 1 h
     }),
     cookie: {
       secure: false,
-      maxAge: 60000, // 1 min
-      // maxAge: 7200000, // 2 h
+      // maxAge: 60000, // 1 min
+      maxAge: 7200000, // 1 h
       httpOnly: true,
       domain: "localhost",
       path: "/",

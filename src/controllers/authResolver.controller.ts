@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import prisma from "../services/prisma";
 import {Provider} from "@prisma/client";
+import bcrypt from "bcrypt";
 
 export const logout = (req: Request, res: Response) => {
   if (!req.session.userId) {
@@ -32,10 +33,11 @@ export const register = async (req: Request, res: Response) => {
 
   if (existingUser) {
     if (existingUser.provider === Provider.GOOGLE && !existingUser.password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
       const updatedUser = await prisma.user.update({
         where: {email},
         data: {
-          password,
+          password: hashedPassword,
         },
       });
 
@@ -45,8 +47,15 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({error: "User already exists."});
     }
   } else {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await prisma.user.create({
-      data: {name, email, password, provider: Provider.LOCAL},
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        provider: Provider.LOCAL
+      },
     });
 
     req.session.userId = user.id;
@@ -70,15 +79,19 @@ export const login = async (req: Request, res: Response) => {
 
   if (email && password) {
     const user = await prisma.user.findUnique({where: {email}});
-    if (user && user.password === password) {
-      req.session.userId = user.id;
-      console.log("session", req.session)
-      return res.status(200).json(user);
-    } else {
-      return res.status(400).json({error: "Invalid credentials."});
-    }
-  } else return res.status(400).json({error: "User not found."});
 
+    if (user) {
+      const passwordMatch = bcrypt.compare(password, user.password || '');
+
+      if (passwordMatch) {
+        req.session.userId = user.id;
+        return res.status(200).json(user);
+      } else return res.status(400).json({error: "Invalid credentials."});
+
+    } else return res.status(400).json({error: "User not found."});
+
+  } else return res.status(400).json({error: "Email and password are required."});
+  
   // #swagger.tags = ['Auth']
   /* #swagger.parameters['body'] = {
     in: 'body',
