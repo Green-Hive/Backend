@@ -42,18 +42,29 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
     const userTokens = oAuth2Client.credentials;
 
     const {name, email, id} = await getUserData(userTokens.access_token, userTokens.id_token);
-
     const existingUser = await prisma.user.findFirst({
       where: {email},
     });
 
-    if (!existingUser) {
+    if (existingUser) {
+      if (existingUser.provider === Provider.LOCAL) {
+        const updatedUser = await prisma.user.update({
+          where: {email},
+          data: {
+            id,
+            provider: Provider.GOOGLE,
+          },
+        });
+        console.log('Google user updated!');
+      } else {
+        console.error('User exists!');
+      }
+    } else {
       await prisma.user.create({
         data: {name, email, id, provider: Provider.GOOGLE},
       });
       console.log('Google user created!');
-    } else console.error('User exists!');
-
+    }
     req.session.userId = id;
     return res.redirect(process.env.CLIENT_URL);
   } catch (error: any) {

@@ -10,7 +10,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import PgSession from 'connect-pg-simple';
 import getCurrentUser from "./middlewares/getCurrentUser.middleware.ts";
-import checkAuthMiddleware from "./middlewares/checkAuth.middleware.ts";
+import checkAuth from "./middlewares/checkAuth.middleware.ts";
 
 const app = express();
 const corsOptions = {
@@ -49,10 +49,12 @@ app.use(
 
 //MIDDLEWARES//
 app.use(getCurrentUser);
-// app.use("/api/users", checkAuthentication, checkAuthorization, userRoutes);
-// app.use("/api/hives", checkAuthentication, hiveRoutes);
 app.get('/me', (req, res) => {
   const {userInfo} = res.locals;
+
+  console.log("=> ME <=\n")
+  console.log("session=", req.session, "\n")
+  console.log("locals=", res.locals, "\n")
 
   if (req.session.userId) {
     const userId = req.session.userId;
@@ -64,8 +66,8 @@ app.get('/me', (req, res) => {
 
 // ROUTES //
 app.use("/api/auth", authRoutes)
-app.use("/api/users", checkAuthMiddleware, userRoutes)
-app.use("/api/hives", checkAuthMiddleware, hiveRoutes)
+app.use("/api/users", userRoutes)
+app.use("/api/hives", checkAuth, hiveRoutes)
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export default app;

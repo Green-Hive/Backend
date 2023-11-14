@@ -17,10 +17,6 @@ async function getCurrentUser(req: Request, res: Response, next: NextFunction): 
       console.error("Error when fetching user from database", error);
     }
   }
-  console.log("=> CURRENT USER MIDDLEWARE <=\n")
-  console.log("session=", req.session, "\n")
-  console.log("locals=", res.locals, "\n")
-
   return next();
 }
 
