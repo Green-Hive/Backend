@@ -16,6 +16,7 @@ export const logout = (req: Request, res: Response) => {
       }
     });
   }
+  // #swagger.tags = ['Auth']
 };
 
 export const register = async (req: Request, res: Response) => {
@@ -47,25 +48,44 @@ export const register = async (req: Request, res: Response) => {
     const user = await prisma.user.create({
       data: {name, email, password, provider: Provider.LOCAL},
     });
-    
+
     req.session.userId = user.id;
     return res.status(200).json(user);
   }
+
+  // #swagger.tags = ['Auth']
+  /* #swagger.parameters['body'] = {
+    in: 'body',
+    required: true,
+    schema: {
+        email: 'example@email.com',
+        password: '****',
+        name: 'John Doe',
+    }
+} */
 };
 
+export const login = async (req: Request, res: Response) => {
+  const {email, password} = req.body;
 
-//
-// app.post('/login', async (req, res) => {
-//   const {email, password} = req.body;
-//
-//   if (email && password) {
-//     const user = await prisma.user.findUnique({where: {email}});
-//     if (user && user.password === password) {
-//       req.session.userId = user.id;
-//       console.log("session", req.session)
-//       return res.status(200).json(user);
-//     } else {
-//       return res.status(400).json({error: "Invalid credentials."});
-//     }
-//   } else res.status(400).json({error: "User not found."});
-// });
+  if (email && password) {
+    const user = await prisma.user.findUnique({where: {email}});
+    if (user && user.password === password) {
+      req.session.userId = user.id;
+      console.log("session", req.session)
+      return res.status(200).json(user);
+    } else {
+      return res.status(400).json({error: "Invalid credentials."});
+    }
+  } else return res.status(400).json({error: "User not found."});
+
+  // #swagger.tags = ['Auth']
+  /* #swagger.parameters['body'] = {
+    in: 'body',
+    required: true,
+    schema: {
+        email: 'example@email.com',
+        password: '****',
+    }
+} */
+};

@@ -21,6 +21,7 @@ export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
   });
 
   return res.json({url: authorizeUrl});
+  // #swagger.tags = ['Auth']
 }
 
 export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,4 +72,5 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
     console.error(error);
     return res.status(400).json({error: error.message});
   }
+  // #swagger.tags = ['Auth']
 }
