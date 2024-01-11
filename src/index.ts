@@ -1,4 +1,4 @@
-import app from "./app.ts";
+import app from "./app";
 import figlet from "figlet";
 
 //Design just to show the url of the swagger documentation
@@ -13,7 +13,7 @@ import('terminal-link').then((terminalLink) => {
   console.log('_________________________________________________________________\n');
 });
 
-figlet('Green Hive API', (error, data) => {
+figlet('Green Hive API', (error: any, data: any) => {
   if (error) {
     console.error(error);
     return;

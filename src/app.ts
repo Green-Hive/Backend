@@ -2,15 +2,15 @@ import 'dotenv/config';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger/swagger.json';
-import userRoutes from "./routes/user.routes.ts";
-import hiveRoutes from "./routes/hive.routes.ts";
-import authRoutes from "./routes/auth.routes.ts";
+import userRoutes from "./routes/user.routes";
+import hiveRoutes from "./routes/hive.routes";
+import authRoutes from "./routes/auth.routes";
 import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import PgSession from 'connect-pg-simple';
-import getCurrentUser from "./middlewares/getCurrentUser.middleware.ts";
-import checkAuth from "./middlewares/checkAuth.middleware.ts";
+import getCurrentUser from "./middlewares/getCurrentUser.middleware";
+import checkAuth from "./middlewares/checkAuth.middleware";
 
 const app = express();
 const corsOptions = {

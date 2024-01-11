@@ -8,6 +8,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": false,
+    "noEmit": false
   }
 }
