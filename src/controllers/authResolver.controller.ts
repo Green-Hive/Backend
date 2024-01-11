@@ -48,7 +48,6 @@ export const register = async (req: Request, res: Response) => {
     }
   } else {
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await prisma.user.create({
       data: {
         name,
@@ -61,11 +60,11 @@ export const register = async (req: Request, res: Response) => {
     req.session.userId = user.id;
     return res.status(200).json(user);
   }
-
   // #swagger.tags = ['Auth']
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
+    description: 'name*, email* , password*: required',
     schema: {
         email: 'example@email.com',
         password: '****',
@@ -91,11 +90,11 @@ export const login = async (req: Request, res: Response) => {
     } else return res.status(400).json({error: "User not found."});
 
   } else return res.status(400).json({error: "Email and password are required."});
-
   // #swagger.tags = ['Auth']
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
+    description: 'email* , password*: required',
     schema: {
         email: 'example@email.com',
         password: '****',

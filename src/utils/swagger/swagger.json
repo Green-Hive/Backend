@@ -162,6 +162,8 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
+            "description": "name*, email* , password*: required",
             "schema": {
               "type": "object",
               "properties": {
@@ -172,6 +174,10 @@
                 "email": {
                   "type": "string",
                   "example": "example@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "****"
                 }
               }
             }

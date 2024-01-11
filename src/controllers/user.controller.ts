@@ -1,13 +1,23 @@
 import {Request, Response} from "express";
 import prisma from "../services/prisma";
 import {Provider} from "@prisma/client";
+import bcrypt from "bcrypt";
 
 export const postUser = async (req: any, res: Response) => {
-  const {name, email, id}: { name: string, email: string, id: string } = req.body;
+  const {name, email, id, password}: { name: string, email: string, id: string, password: string } = req.body;
+
+  if (!password) return res.status(400).json({error: "Password is required."});
+  if (password && password.length < 3) return res.status(400).json({error: "Password must be at least 3 characters long."});
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: {name, email, id, provider: Provider.LOCAL},
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        provider: Provider.LOCAL
+      },
     });
     return res.status(201).json(user);
   } catch (error: any) {
@@ -21,9 +31,12 @@ export const postUser = async (req: any, res: Response) => {
   // #swagger.tags = ['Users']
   /* #swagger.parameters['body'] = {
     in: 'body',
+    required: true,
+    description: 'name*, email* , password*: required',
     schema: {
         name: 'my name',
-        email: 'example@gmail.com'
+        email: 'example@gmail.com',
+        password: '****',
     }
 } */
 };
@@ -58,12 +71,16 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const patchUser = async (req: Request, res: Response) => {
   const {id} = req.params;
-  const {name, email}: { name: string, email: string } = req.body;
+  const {name, email, password}: { name: string, email: string, password: string } = req.body;
+  let hashedPassword
+
+  if (password && password.length < 3) return res.status(400).json({error: "Password must be at least 3 characters long."});
+  if (password) hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     const user = await prisma.user.update({
       where: {id: id},
-      data: {name, email},
+      data: {name, email, password: hashedPassword},
     });
     return res.status(200).json(user);
   } catch (error: any) {
@@ -73,9 +90,11 @@ export const patchUser = async (req: Request, res: Response) => {
   // #swagger.tags = ['Users']
   /* #swagger.parameters['body'] = {
      in: 'body',
+      required: true,
      schema: {
          name: 'my name',
-         email: 'example@gmail.com'
+         email: 'example@gmail.com',
+         password: '****',
      }
 } */
 };
