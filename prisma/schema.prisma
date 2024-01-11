@@ -32,6 +32,7 @@ model User {
   name      String
   password  String?
   provider  Provider
+  notified  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   hive      Hive[]

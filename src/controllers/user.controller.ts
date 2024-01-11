@@ -71,16 +71,23 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const patchUser = async (req: Request, res: Response) => {
   const {id} = req.params;
-  const {name, email, password}: { name: string, email: string, password: string } = req.body;
+  const {name, email, password, notified}: {
+    name: string,
+    email: string,
+    password: string,
+    notified: boolean
+  } = req.body;
   let hashedPassword
 
   if (password && password.length < 3) return res.status(400).json({error: "Password must be at least 3 characters long."});
   if (password) hashedPassword = await bcrypt.hash(password, 10);
 
   try {
+
     const user = await prisma.user.update({
       where: {id: id},
-      data: {name, email, password: hashedPassword},
+      // @ts-ignore
+      data: {name, email, password: hashedPassword, notified},
     });
     return res.status(200).json(user);
   } catch (error: any) {
