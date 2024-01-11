@@ -81,7 +81,7 @@ export const login = async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique({where: {email}});
 
     if (user) {
-      const passwordMatch = bcrypt.compare(password, user.password || '');
+      const passwordMatch = await bcrypt.compare(password, user.password || '');
 
       if (passwordMatch) {
         req.session.userId = user.id;
@@ -91,7 +91,7 @@ export const login = async (req: Request, res: Response) => {
     } else return res.status(400).json({error: "User not found."});
 
   } else return res.status(400).json({error: "Email and password are required."});
-  
+
   // #swagger.tags = ['Auth']
   /* #swagger.parameters['body'] = {
     in: 'body',

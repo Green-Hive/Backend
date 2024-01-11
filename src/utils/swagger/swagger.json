@@ -296,6 +296,8 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
+            "description": "userId*, name* : required",
             "schema": {
               "type": "object",
               "properties": {
@@ -303,9 +305,17 @@
                   "type": "string",
                   "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
                 },
-                "title": {
+                "name": {
                   "type": "string",
                   "example": "my hive"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "my hive description"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "{}"
                 }
               }
             }
@@ -377,13 +387,17 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
+                "name": {
                   "type": "string",
                   "example": "my hive"
                 },
                 "description": {
                   "type": "string",
                   "example": "my hive description"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "{}"
                 }
               }
             }
