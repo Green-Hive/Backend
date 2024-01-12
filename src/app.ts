@@ -39,7 +39,6 @@ app.use(
       // maxAge: 60000, // 1 min
       maxAge: 7200000, // 1 h
       httpOnly: true,
-      domain: "localhost",
       path: "/",
       sameSite: "lax",
     },
