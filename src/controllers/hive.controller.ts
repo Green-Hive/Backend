@@ -1,5 +1,5 @@
-import {Request, Response} from "express";
-import prisma from "../services/prisma";
+import {Request, Response} from 'express';
+import prisma from '../services/prisma';
 
 export const postHive = async (req: Request, res: Response) => {
   const {userId, name, description, data}: {
@@ -16,7 +16,7 @@ export const postHive = async (req: Request, res: Response) => {
     return res.status(200).json(hive);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('name')) {
-      return res.status(400).json({error: "Name already exists."});
+      return res.status(400).json({error: 'Name already exists.'});
     } else {
       console.error(error);
       return res.status(400).json({error: error.message});
@@ -45,7 +45,7 @@ export const getAllHives = async (_req: Request, res: Response) => {
     });
     return res.status(200).json(hives);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
@@ -60,7 +60,7 @@ export const getHive = async (req: Request, res: Response) => {
     });
     return res.status(200).json(hive);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
@@ -78,7 +78,7 @@ export const patchHive = async (req: Request, res: Response) => {
     return res.status(200).json(hive);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('name')) {
-      return res.status(400).json({error: "Name already taken."});
+      return res.status(400).json({error: 'Name already taken.'});
     } else {
       console.error(error);
       return res.status(400).json({error: error.message});
@@ -101,10 +101,10 @@ export const deleteHive = async (req: Request, res: Response) => {
 
   try {
     await prisma.hive.delete({where: {id}});
-    res.status(200).send("Hive deleted");
+    res.status(200).send('Hive deleted');
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
-}
+};

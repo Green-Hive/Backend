@@ -8,7 +8,7 @@ export default defineConfig({
     ],
     coverage: {
       exclude: [...configDefaults.coverage.exclude, '**/prisma/**', '**/src/utils/swagger/**'],
-      provider: 'v8',  // Configuration du fournisseur V8
+      provider: 'v8',
     },
   },
 });
