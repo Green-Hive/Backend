@@ -1,13 +1,13 @@
-import {Request, Response} from "express";
-import prisma from "../services/prisma";
-import {Provider} from "@prisma/client";
-import bcrypt from "bcrypt";
+import {Request, Response} from 'express';
+import prisma from '../services/prisma';
+import {Provider} from '@prisma/client';
+import bcrypt from 'bcrypt';
 
-export const postUser = async (req: any, res: Response) => {
-  const {name, email, id, password}: { name: string, email: string, id: string, password: string } = req.body;
+export const postUser = async (req: Request, res: Response) => {
+  const {name, email, id, password}: {name: string, email: string, id: string, password: string} = req.body;
 
-  if (!password) return res.status(400).json({error: "Password is required."});
-  if (password && password.length < 3) return res.status(400).json({error: "Password must be at least 3 characters long."});
+  if (!password) return res.status(400).json({error: 'Password is required.'});
+  if (password && password.length < 3) return res.status(400).json({error: 'Password must be at least 3 characters long.'});
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -16,13 +16,13 @@ export const postUser = async (req: any, res: Response) => {
         name,
         email,
         password: hashedPassword,
-        provider: Provider.LOCAL
+        provider: Provider.LOCAL,
       },
     });
     return res.status(201).json(user);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('email')) {
-      return res.status(400).json({error: "Email already exists."});
+      return res.status(400).json({error: 'Email already exists.'});
     } else {
       console.error(error);
       return res.status(400).json({error: error.message});
@@ -48,7 +48,7 @@ export const getAllUsers = async (_req: Request, res: Response) => {
     });
     return res.status(200).json(users);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['Users']
@@ -63,7 +63,7 @@ export const getUser = async (req: Request, res: Response) => {
     });
     return res.status(200).json(user);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Users']
@@ -77,21 +77,20 @@ export const patchUser = async (req: Request, res: Response) => {
     password: string,
     notified: boolean
   } = req.body;
-  let hashedPassword
+  let hashedPassword;
 
-  if (password && password.length < 3) return res.status(400).json({error: "Password must be at least 3 characters long."});
+  if (password && password.length < 3) return res.status(400).json({error: 'Password must be at least 3 characters long.'});
   if (password) hashedPassword = await bcrypt.hash(password, 10);
 
   try {
 
     const user = await prisma.user.update({
       where: {id: id},
-      // @ts-ignore
       data: {name, email, password: hashedPassword, notified},
     });
     return res.status(200).json(user);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Users']
@@ -111,10 +110,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   try {
     await prisma.user.delete({where: {id}});
-    res.status(200).send("User deleted");
+    res.status(200).send('User deleted');
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Users']
-}
+};

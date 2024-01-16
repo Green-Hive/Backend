@@ -1,29 +1,30 @@
 import {PrismaClient} from '@prisma/client';
 
+
 const prisma = new PrismaClient();
 
 async function main() {
-  // const user = await prisma.user.upsert({
-  //   where: {email: 'clem.loiseau@gmail.com'},
-  //   update: {},
-  //   create: {
-  //     email: 'clem.loiseau@gmail.com',
-  //     name: 'Clem',
-  //     password: 'password',
-  //
-  //   },
-  // });
-  // console.log({user});
-  //
-  // const hive = await prisma.hive.create({
-  //   data: {
-  //     title: 'Hive 1',
-  //     description: 'Hive 1 description',
-  //     userId: user.id,
-  //   },
-  // });
-  // console.log({hive});
+
+  const user = await prisma.user.create({
+    data: {
+      name: 'Hive 1',
+      email: 'Hive 1 description',
+      password: '123',
+      provider: 'LOCAL',
+    },
+  });
+  console.log({user});
+
+  const hive = await prisma.hive.create({
+    data: {
+      name: 'Hive 1',
+      description: 'Hive 1 description',
+      userId: user.id,
+    },
+  });
+  console.log({hive});
 }
+
 
 main()
   .then(async () => {
