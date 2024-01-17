@@ -2,19 +2,19 @@ import 'dotenv/config';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger/swagger.json';
-import userRoutes from "./routes/user.routes";
-import hiveRoutes from "./routes/hive.routes";
-import authRoutes from "./routes/auth.routes";
-import session from "express-session";
-import cors from "cors";
-import cookieParser from "cookie-parser";
+import userRoutes from './routes/user.routes';
+import hiveRoutes from './routes/hive.routes';
+import authRoutes from './routes/auth.routes';
+import session from 'express-session';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import PgSession from 'connect-pg-simple';
-import getCurrentUser from "./middlewares/getCurrentUser.middleware";
-import checkAuth from "./middlewares/checkAuth.middleware";
+import getCurrentUser from './middlewares/getCurrentUser.middleware';
+import checkAuth from './middlewares/checkAuth.middleware';
 
 const app = express();
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: true,
   credentials: true,
 };
 
@@ -39,10 +39,10 @@ app.use(
       // maxAge: 60000, // 1 min
       maxAge: 7200000, // 1 h
       httpOnly: true,
-      path: "/",
-      sameSite: "lax",
+      path: '/',
+      sameSite: 'lax',
     },
-  })
+  }),
 );
 
 //MIDDLEWARES//
@@ -50,22 +50,22 @@ app.use(getCurrentUser);
 app.get('/me', (req, res) => {
   const {userInfo} = res.locals;
 
-  console.log("=> ME <=\n")
-  console.log("session=", req.session, "\n")
-  console.log("locals=", res.locals, "\n")
+  console.log('=> ME <=\n');
+  console.log('session=', req.session, '\n');
+  console.log('locals=', res.locals, '\n');
 
   if (req.session.userId) {
     const userId = req.session.userId;
-    res.status(200).json({message: "User is logged", userInfo});
+    res.status(200).json({message: 'User is logged', userInfo});
   } else {
-    res.status(404).json({message: "User is not logged"});
+    res.status(404).json({message: 'User is not logged', userInfo: null});
   }
 });
 
 // ROUTES //
-app.use("/api/auth", authRoutes)
-app.use("/api/users", userRoutes)
-app.use("/api/hives", checkAuth, hiveRoutes)
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/hives', checkAuth, hiveRoutes);
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export default app;
