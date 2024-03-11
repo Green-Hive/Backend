@@ -55,7 +55,6 @@ app.get('/me', (req, res) => {
   console.log('locals=', res.locals, '\n');
 
   if (req.session.userId) {
-    const userId = req.session.userId;
     res.status(200).json({message: 'User is logged', userInfo});
   } else {
     res.status(404).json({message: 'User is not logged', userInfo: null});
