@@ -1,4 +1,4 @@
-import {afterEach, beforeEach, describe, expect, test, afterAll} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, afterAll, beforeAll} from 'vitest';
 import request from 'supertest';
 import app from '../app';
 import {PrismaClient} from '@prisma/client';
@@ -10,8 +10,7 @@ let hiveId: string;
 
 describe('Hives: [POST] /api/hives', () => {
 
-  beforeEach(async () => {
-    // Register a new user
+  beforeAll(async () => {
     const userRegister = await request(app)
       .post('/api/auth/register')
       .send({
@@ -21,27 +20,20 @@ describe('Hives: [POST] /api/hives', () => {
       });
 
     expect(userRegister.status).toBe(200);
-
     expect(userRegister.headers['set-cookie']).toBeDefined();
-    sessionCookie = userRegister.headers['set-cookie'];
 
+    sessionCookie = userRegister.headers['set-cookie'];
     userId = userRegister.body.id;
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await prisma.hive.deleteMany({where: {id: hiveId}});
     await prisma.user.deleteMany({where: {email: 'userWithHive1@gmail.com'}});
-  });
-
-  afterAll(async () => {
     await prisma.$disconnect(); // Close the Prisma client connection
   });
 
   test('create a new hives', async () => {
-    console.log('userId', userId)
     expect(sessionCookie).toBeDefined();
-
-    console.log("SESSION", sessionCookie)
 
     const validPost = await request(app)
       .post('/api/hives')
@@ -59,22 +51,45 @@ describe('Hives: [POST] /api/hives', () => {
 
     hiveId = validPost.body.id;
   });
+  test('should return error if hive name already exists', async () => {
+    expect(sessionCookie).toBeDefined();
 
-  // test('should return an error if password is missing', async () => {
-  //   // Test logic for missing password error
-  // });
-  //
-  // test('should return an error if password is too short', async () => {
-  //   // Test logic for short password error
-  // });
-  //
-  // test('should return an error if email already exists', async () => {
-  //   // Test logic for duplicate email error
-  // });
-  //
-  // test('should return an error for other validation errors', async () => {
-  //   // Test logic for other validation errors
-  // });
+    const validPost = await request(app)
+        .post('/api/hives')
+        .set('Cookie', sessionCookie)
+        .send({
+          userId,
+          name: 'my hive',
+          description: 'my hive description',
+        });
+
+    const invalidPost = await request(app)
+      .post('/api/hives')
+      .set('Cookie', sessionCookie)
+      .send({
+        userId,
+        name: 'my hive',
+        description: 'another hive with the same name',
+      });
+
+    expect(invalidPost.status).toBe(400);
+    expect(invalidPost.body).toEqual({error: 'Name already exists.'});
+  });
+
+  test('should return error if false id', async () => {
+    expect(sessionCookie).toBeDefined();
+
+    const invalidPost = await request(app)
+      .post('/api/hives')
+      .set('Cookie', sessionCookie)
+      .send({
+        userId: 'falseId',
+        name: 'my hive2',
+        description: 'another hive with the same name',
+      });
+
+    expect(invalidPost.status).toBe(400);
+  });
 });
 
 // describe('GET /api/users', () => {
