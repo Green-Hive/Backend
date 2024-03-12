@@ -48,19 +48,16 @@ model Hive {
   user        User       @relation(fields: [userId], references: [id])
   userId      String
   beeData     HiveData[]
-  // data        Json       @default("{}")
 }
 
 model HiveData {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  hive        Hive     @relation(fields: [hiveId], references: [id])
+  hive        Hive     @relation(fields: [hiveId], references: [id], onDelete: Cascade)
   hiveId      String
   temp        Float    @default(0) // Température de 0 à 360°c (float),
   hum         Float    @default(0) // Humidité de 0 à 100% (float)
   weight      Float    @default(0) // Poids en g (float)
   inclination Boolean  @default(false) // Si la ruche est droite ou non (boolean)timestamp   DateTime @default(now()) // Date des données relevées toute les 5 secondes (ISO 8601)
-  lat         Float    @default(0)
-  lng         Float    @default(0)
 }

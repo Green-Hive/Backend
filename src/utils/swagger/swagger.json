@@ -328,10 +328,6 @@
                 "description": {
                   "type": "string",
                   "example": "my hive description"
-                },
-                "data": {
-                  "type": "string",
-                  "example": "{}"
                 }
               }
             }

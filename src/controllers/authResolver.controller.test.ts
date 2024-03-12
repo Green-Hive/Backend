@@ -55,7 +55,7 @@ test('POST:login && logout => /api/auth/login && /logout', async () => {
   const sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
   expect(sessionCookie).toBeDefined();
 
-
+  await prisma.user.deleteMany({where: {email: 'user2@gmail.com'}});
   // const logoutResponse = await request(app)
   //   .post('/api/auth/logout');
   // expect(logoutResponse.status).toBe(200);

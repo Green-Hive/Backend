@@ -2,16 +2,15 @@ import {Request, Response} from 'express';
 import prisma from '../services/prisma';
 
 export const postHive = async (req: Request, res: Response) => {
-  const {userId, name, description, data}: {
+  const {userId, name, description}: {
     userId: string,
     name: string,
     description: string,
-    data: object
   } = req.body;
 
   try {
     const hive = await prisma.hive.create({
-      data: {userId, name, description, data},
+      data: {userId, name, description},
     });
     return res.status(200).json(hive);
   } catch (error: any) {
@@ -31,7 +30,6 @@ export const postHive = async (req: Request, res: Response) => {
         userId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
         name: 'my hive',
         description: 'my hive description',
-        data: '{}',
     }
     }
   } */
