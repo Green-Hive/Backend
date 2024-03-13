@@ -15,8 +15,6 @@ describe('Auth register: [POST] /api/auth/register', () => {
   afterAll(async () => {
     await prisma.user.deleteMany({where: {email: 'authUser@gmail.com'}});
     await prisma.user.deleteMany({where: {email: 'googleUser@gmail.com'}});
-
-
   });
 
   test('register an user', async () => {
@@ -121,35 +119,93 @@ describe('Auth register: [POST] /api/auth/register', () => {
 
 });
 
-// test('POST:login && logout => /api/auth/login && /logout', async () => {
-//   const failLogoutResponse = await request(app)
-//     .post('/api/auth/logout')
-//     .send({
-//       email: 'user2@gmail.com',
-//       password: '1234',
-//     });
-//   expect(failLogoutResponse.status).toBe(404);
-//   expect(failLogoutResponse.body).toEqual({message: 'User is not logged in'});
-//
-//   const loginResponse = await request(app)
-//     .post('/api/auth/login')
-//     .send({
-//       email: 'user2@gmail.com',
-//       password: '1234',
-//     });
-//   expect(loginResponse.status).toBe(200);
-//   expect(loginResponse.body).toHaveProperty('id');
-//
-//   const setCookieHeader: any = loginResponse.headers['set-cookie'];
-//   const sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
-//   expect(sessionCookie).toBeDefined();
-//
-//   await prisma.user.deleteMany({where: {email: 'user2@gmail.com'}});
-//   const logoutResponse = await request(app)
-//     .post('/api/auth/logout');
-//   expect(logoutResponse.status).toBe(200);
-//   expect(logoutResponse.body).toEqual({message: 'Logout successful'});
-// });
+describe('Auth login: [POST] /api/auth/login', () => {
+  afterAll(async () => {
+    await prisma.user.deleteMany({where: {email: 'userLogin@gmail.com'}});
+
+  });
+
+  test('login an user', async () => {
+    const user = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'userLogin',
+        email: 'userLogin@gmail.com',
+        password: '1234',
+      });
+    console.log(user.body);
+    expect(user.status).toBe(201);
+
+    const loginResponse = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'userLogin@gmail.com',
+        password: '1234',
+      });
+    expect(loginResponse.status).toBe(200);
+
+    const setCookieHeader: any = loginResponse.headers['set-cookie'];
+    const sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
+    expect(sessionCookie).toBeDefined();
+
+    const logout = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', sessionCookie);
+    expect(logout.status).toBe(200);
+  });
+
+  test("login an user with wrong password", async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'userLogin@gmail.com',
+        password: '12345',
+      });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({error: 'Invalid credentials.'});
+  });
+
+  test("login an user with wrong password", async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'userincoLogin@gmail.com',
+        password: '1234',
+      });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({error: 'User not found.'});
+  });
+
+  test("login no email", async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: '',
+        password: '1234',
+      });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({error: 'Email and password are required.'});
+  });
+});
+
+
+
+describe('Auth logout: [POST] /api/auth/logout', () => {
+
+  test('not logged', async () => {
+    const failLogoutResponse = await request(app)
+      .post('/api/auth/logout')
+      .send({
+        email: 'user2@gmail.com',
+        password: '1234',
+      });
+    expect(failLogoutResponse.status).toBe(404);
+    expect(failLogoutResponse.body).toEqual({message: 'User is not logged in'});
+  });
+});
+
+
+
 
 
 
