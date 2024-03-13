@@ -31,6 +31,8 @@ beforeEach(async () => {
       description: 'my hive description',
     });
   hiveId = hiveTest.body.id;
+
+  expect(sessionCookie).toBeDefined();
 });
 
 afterEach(async () => {
@@ -48,8 +50,6 @@ afterEach(async () => {
 describe('Hives: [POST] /api/hives', () => {
 
   test('create a new hives', async () => {
-    expect(sessionCookie).toBeDefined();
-
     const validPost = await request(app)
       .post('/api/hives')
       .set('Cookie', sessionCookie)
@@ -66,8 +66,6 @@ describe('Hives: [POST] /api/hives', () => {
   });
 
   test('return error if hive name already exists', async () => {
-    expect(sessionCookie).toBeDefined();
-
     const validPost = await request(app)
         .post('/api/hives')
         .set('Cookie', sessionCookie)
@@ -91,8 +89,6 @@ describe('Hives: [POST] /api/hives', () => {
   });
 
   test('return error if false id', async () => {
-    expect(sessionCookie).toBeDefined();
-
     const invalidPost = await request(app)
       .post('/api/hives')
       .set('Cookie', sessionCookie)
@@ -107,8 +103,6 @@ describe('Hives: [POST] /api/hives', () => {
 
 describe('Hives: [GET]all /api/hives', () => {
   test('get all hives', async () => {
-    expect(sessionCookie).toBeDefined();
-
     const validPost = await request(app)
       .post('/api/hives')
       .set('Cookie', sessionCookie)
@@ -139,8 +133,6 @@ describe('Hives: [GET]all /api/hives', () => {
 
 describe('Hives: [GET]one /api/hives/:id', () => {
   test('get a hive by id', async () => {
-    expect(sessionCookie).toBeDefined();
-
     const validGet = await request(app)
       .get(`/api/hives/${hiveId}`)
       .set('Cookie', sessionCookie);
@@ -148,7 +140,7 @@ describe('Hives: [GET]one /api/hives/:id', () => {
     expect(validGet.body.id).toBe(hiveId);
   });
 
-  test('should return 400 for invalid hive id', async () => {
+  test('return 404 for invalid hive id', async () => {
     expect(sessionCookie).toBeDefined();
 
     const invalidGet = await request(app)
@@ -159,22 +151,71 @@ describe('Hives: [GET]one /api/hives/:id', () => {
   });
 });
 
-// describe('PATCH /api/users/:id', () => {
-//   test('should update a user', async () => {
-//     // Test logic for updating a user
-//   });
-//
-//   test('should return an error for invalid data', async () => {
-//     // Test logic for invalid data error
-//   });
-// });
-//
-// describe('DELETE /api/users/:id', () => {
-//   test('should delete a user', async () => {
-//     // Test logic for deleting a user
-//   });
-//
-//   test('should return an error for invalid user id', async () => {
-//     // Test logic for invalid user id error
-//   });
-// });
+describe('PATCH /api/users/:id', () => {
+  test('update a user', async () => {
+    const validPatch = await request(app)
+      .patch(`/api/hives/${hiveId}`)
+      .set('Cookie', sessionCookie)
+      .send({
+        name: 'new hive name',
+        description: 'new hive description',
+      });
+    expect(validPatch.status).toBe(200);
+    expect(validPatch.body.name).toBe('new hive name');
+    expect(validPatch.body.description).toBe('new hive description');
+  });
+
+  test('return 400 if name taken', async () => {
+    expect(sessionCookie).toBeDefined();
+
+    const validPost = await request(app)
+      .post('/api/hives')
+      .set('Cookie', sessionCookie)
+      .send({
+        userId,
+        name: 'my hive3',
+        description: 'my hive description',
+      });
+
+    const invalidPatch = await request(app)
+      .patch(`/api/hives/${hiveId}`)
+      .set('Cookie', sessionCookie)
+      .send({
+        name: 'my hive3',
+        description: 'new hive description',
+      });
+    expect(invalidPatch.status).toBe(400);
+    expect(invalidPatch.body).toEqual({error: 'Name already taken.'});
+  });
+
+  test('return 400 for invalid hive id', async () => {
+    expect(sessionCookie).toBeDefined();
+
+    const invalidPatch = await request(app)
+      .patch(`/api/hives/${"1234"}`)
+      .set('Cookie', sessionCookie)
+      .send({
+        name: 'new hive name',
+        description: 'new hive description',
+      });
+
+    expect(invalidPatch.status).toBe(400);
+  });
+});
+
+describe('DELETE /api/hive/:id', () => {
+  test('delete a hive', async () => {
+    const validDelete = await request(app)
+      .delete(`/api/hives/${hiveId}`)
+      .set('Cookie', sessionCookie);
+    expect(validDelete.status).toBe(200);
+    expect(validDelete.body).toEqual({message: 'Hive deleted.'});
+  });
+
+  test('error deleted user', async () => {
+    const invalidDelete = await request(app)
+      .delete(`/api/hives/${"1234"}`)
+      .set('Cookie', sessionCookie);
+    expect(invalidDelete.status).toBe(400);
+  });
+});

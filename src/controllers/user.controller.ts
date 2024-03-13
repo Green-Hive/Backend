@@ -66,7 +66,7 @@ export const getUser = async (req: Request, res: Response) => {
     return res.status(200).json(user);
   } catch (error: any) {
     console.error(error);
-    return res.status(400).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
   // #swagger.tags = ['Users']
 };

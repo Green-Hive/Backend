@@ -56,8 +56,8 @@ export const getHive = async (req: Request, res: Response) => {
     const hive = await prisma.hive.findUnique({
       where: {id},
     });
-    if (!hive) return res.status(404).json({ error: 'Hive not found.' });
 
+    if (!hive) return res.status(404).json({ error: 'Hive not found.' });
     return res.status(200).json(hive);
   } catch (error: any) {
     console.error(error);
@@ -101,7 +101,7 @@ export const deleteHive = async (req: Request, res: Response) => {
 
   try {
     await prisma.hive.delete({where: {id}});
-    res.status(200).send('Hive deleted');
+    res.status(200).json({message: 'Hive deleted.'});
   } catch (error: any) {
     console.error(error);
     return res.status(400).json({error: error.message});
