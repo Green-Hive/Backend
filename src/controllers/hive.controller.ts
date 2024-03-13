@@ -56,10 +56,12 @@ export const getHive = async (req: Request, res: Response) => {
     const hive = await prisma.hive.findUnique({
       where: {id},
     });
+    if (!hive) return res.status(404).json({ error: 'Hive not found.' });
+
     return res.status(200).json(hive);
   } catch (error: any) {
     console.error(error);
-    return res.status(400).json({error: error.message});
+    return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
 };

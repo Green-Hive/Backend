@@ -72,9 +72,8 @@ test('GET:user => /api/users/:id', async () => {
   expect(validUser.status).toBe(200);
   expect(validUser.body.id).toBe(userId);
   expect(validUser.body.email).toBe('user1@gmail.com');
-
-  const userId2 = '1234';
-  const invalidUser = await request(app).get(`/api/users/${userId2}`);
+  
+  const invalidUser = await request(app).get(`/api/users/${"1234"}`);
   expect(invalidUser.status).toBe(404);
   expect(invalidUser.body).toEqual({error: 'User not found'});
 });
