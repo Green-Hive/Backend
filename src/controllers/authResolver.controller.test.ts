@@ -15,10 +15,8 @@ describe('Auth register: [POST] /api/auth/register', () => {
   afterAll(async () => {
     await prisma.user.deleteMany({where: {email: 'authUser@gmail.com'}});
     await prisma.user.deleteMany({where: {email: 'googleUser@gmail.com'}});
-    const logout = await request(app)
-      .post('/api/auth/logout')
-      .set('Cookie', sessionCookie);
-    expect(logout.status).toBe(200);
+
+
   });
 
   test('register an user', async () => {
@@ -33,10 +31,13 @@ describe('Auth register: [POST] /api/auth/register', () => {
     expect(response.body).toHaveProperty('id');
 
     const setCookieHeader: any = response.headers['set-cookie'];
-    expect(setCookieHeader).toBeDefined();
-
     sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
     expect(sessionCookie).toBeDefined();
+
+    const logout = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', sessionCookie);
+    expect(logout.status).toBe(200);
   });
 
   test('register an user with no password', async () => {
@@ -75,43 +76,43 @@ describe('Auth register: [POST] /api/auth/register', () => {
     expect(response.body).toEqual({error: 'Email is required.'});
   });
 
-  // test('update user password if Google provider and no password', async () => {
-  //   const googleUser = await prisma.user.create({
-  //     data: {
-  //       name: 'googleUser',
-  //       email: 'googleUser@gmail.com',
-  //       provider: Provider.GOOGLE,
-  //     },
-  //   });
-  //   expect(googleUser).toBeDefined();
-  //
-  //   const addPasswordResponse = await request(app)
-  //     .post('/api/auth/register')
-  //     .send({
-  //       name: 'googleUser',
-  //       email: 'googleUser@gmail.com',
-  //       password: '1234',
-  //     });
-  //
-  //   expect(addPasswordResponse.status).toBe(200);
-  //   expect(addPasswordResponse.body.password).toBeDefined();
-  // });
+  test('update user password if Google provider and no password', async () => {
+    const googleUser = await prisma.user.create({
+      data: {
+        name: 'googleUser',
+        email: 'googleUser@gmail.com',
+        provider: Provider.GOOGLE,
+      },
+    });
+    expect(googleUser).toBeDefined();
 
-  test('register an user with existing email', async () => {
-    const testUser = await request(app)
+    const addPasswordResponse = await request(app)
       .post('/api/auth/register')
       .send({
-        name: 'authUser',
+        name: 'googleUser',
         email: 'googleUser@gmail.com',
         password: '1234',
       });
-    expect(testUser.status).toBe(200);
 
+    expect(addPasswordResponse.status).toBe(200);
+    expect(addPasswordResponse.body.password).toBeDefined();
+
+    const setCookieHeader: any = addPasswordResponse.headers['set-cookie'];
+    sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
+    expect(sessionCookie).toBeDefined();
+
+    const logout = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', sessionCookie);
+    expect(logout.status).toBe(200);
+  });
+
+  test('register an user with existing email', async () => {
     const sameUser = await request(app)
       .post('/api/auth/register')
       .send({
         name: 'authUser',
-        email: 'googleUser@gmail.com',
+        email: 'authUser@gmail.com',
         password: '1234',
     });
     expect(sameUser.status).toBe(400);
