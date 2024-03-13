@@ -113,21 +113,11 @@ describe('Hives: [GET]all /api/hives', () => {
       });
     expect(validPost.status).toBe(200);
 
-    const validPost2 = await request(app)
-      .post('/api/hives')
-      .set('Cookie', sessionCookie)
-      .send({
-        userId,
-        name: 'my hive4',
-        description: 'my hive2 description',
-      });
-    expect(validPost2.status).toBe(200);
-
     const validGet = await request(app)
       .get('/api/hives')
       .set('Cookie', sessionCookie);
     expect(validGet.status).toBe(200);
-    expect(validGet.body.length).toBe(3);
+    expect(validGet.body.length).toBe(2);
   });
 });
 
@@ -151,8 +141,8 @@ describe('Hives: [GET]one /api/hives/:id', () => {
   });
 });
 
-describe('PATCH /api/users/:id', () => {
-  test('update a user', async () => {
+describe('PATCH /api/hives/:id', () => {
+  test('update a hive', async () => {
     const validPatch = await request(app)
       .patch(`/api/hives/${hiveId}`)
       .set('Cookie', sessionCookie)
@@ -203,7 +193,7 @@ describe('PATCH /api/users/:id', () => {
   });
 });
 
-describe('DELETE /api/hive/:id', () => {
+describe('DELETE /api/hives/:id', () => {
   test('delete a hive', async () => {
     const validDelete = await request(app)
       .delete(`/api/hives/${hiveId}`)
@@ -212,7 +202,7 @@ describe('DELETE /api/hive/:id', () => {
     expect(validDelete.body).toEqual({message: 'Hive deleted.'});
   });
 
-  test('error deleted user', async () => {
+  test('error deleted hive', async () => {
     const invalidDelete = await request(app)
       .delete(`/api/hives/${"1234"}`)
       .set('Cookie', sessionCookie);

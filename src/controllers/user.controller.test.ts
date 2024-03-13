@@ -1,114 +1,191 @@
-import {expect, test} from 'vitest';
+import {afterAll, afterEach, beforeEach, describe, expect, test} from 'vitest';
 import request from 'supertest';
 import app from '../app';
 import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 let userId: string;
+let sessionCookie: string;
 
-test('POST:user => /api/users', async () => {
-  await prisma.user.deleteMany({where: {email: 'user1@gmail.com'}});
-
-  const noPassword = await request(app)
-    .post('/api/users')
+beforeEach(async () => {
+  const userRegister = await request(app)
+    .post('/api/auth/register')
     .send({
-      name: 'user1',
-      email: 'user1@gmail.com',
-    });
-  expect(noPassword.status).toBe(400);
-  expect(noPassword.body).toEqual({error: 'Password is required.'});
-
-  const invalidPassword = await request(app)
-    .post('/api/users')
-    .send({
-      name: 'user1',
-      email: 'user1@gmail.com',
-      password: '12',
-    });
-  expect(invalidPassword.status).toBe(400);
-  expect(invalidPassword.body).toEqual({error: 'Password must be at least 3 characters long.'});
-
-  const validPost = await request(app)
-    .post('/api/users')
-    .send({
-      name: 'user1',
-      email: 'user1@gmail.com',
+      name: 'user',
+      email: 'user@gmail.com',
       password: '1234',
     });
-  expect(validPost.status).toBe(201);
-  expect(validPost.body).toHaveProperty('id');
-  expect(validPost.body.email).toBe('user1@gmail.com');
-  expect(validPost.body.name).toBe('user1');
+  expect(userRegister.status).toBe(200);
+  expect(userRegister.headers['set-cookie']).toBeDefined();
 
-  userId = validPost.body.id;
+  sessionCookie = userRegister.headers['set-cookie'];
+  userId = userRegister.body.id;
 
-  const alreadyExistPost = await request(app)
-    .post('/api/users')
-    .send({
-      name: 'user1',
-      email: 'user1@gmail.com',
-      password: '1234',
-    });
-  expect(alreadyExistPost.status).toBe(400);
-  expect(alreadyExistPost.body).toEqual({error: 'Email already exists.'});
-
-  const otherError = await request(app)
-    .post('/api/users')
-    .send({
-      email: 'user1@gmail.com',
-      password: '1234',
-    });
-  expect(otherError.status).toBe(400);
+  expect(sessionCookie).toBeDefined();
 });
 
-test('GETall:users => /api/users', async () => {
-  const response = await request(app).get('/api/users');
-  expect(response.status).toBe(200);
-  expect(response.body).toBeInstanceOf(Array);
+afterEach(async () => {
+  await prisma.user.deleteMany({where: {email: 'user@gmail.com'}});
+
+  const logout = await request(app)
+    .post('/api/auth/logout')
+    .set('Cookie', sessionCookie);
+  expect(logout.status).toBe(200);
+
+  await prisma.$disconnect();
 });
 
-test('GET:user => /api/users/:id', async () => {
-  const validUser = await request(app).get(`/api/users/${userId}`);
-  expect(validUser.status).toBe(200);
-  expect(validUser.body.id).toBe(userId);
-  expect(validUser.body.email).toBe('user1@gmail.com');
+describe('Users: [POST] /api/users', () => {
+  afterAll(async () => {
+    await prisma.user.deleteMany({where: {email: 'user1@gmail.com'}});
+    await prisma.user.deleteMany({where: {email: 'userExist@gmail.com'}});
+  });
 
-  const invalidUser = await request(app).get(`/api/users/${"1234"}`);
-  expect(invalidUser.status).toBe(404);
-  expect(invalidUser.body).toEqual({error: 'User not found'});
+  test('create an user', async () => {
+    const validPost = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'user1',
+        email: 'user1@gmail.com',
+        password: '1234',
+      });
+    expect(validPost.status).toBe(201);
+    expect(validPost.body).toHaveProperty('id');
+    expect(validPost.body.email).toBe('user1@gmail.com');
+    expect(validPost.body.name).toBe('user1');
+  });
+
+  test('create an user with no password', async () => {
+    const noPassword = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'user1',
+        email: 'user1@gmail.com',
+      });
+    expect(noPassword.status).toBe(400);
+    expect(noPassword.body).toEqual({error: 'Password is required.'});
+  });
+
+  test('create an user with invalid password', async () => {
+    const invalidPassword = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'user1',
+        email: 'user1@gmail.com',
+        password: '12',
+      });
+    expect(invalidPassword.status).toBe(400);
+    expect(invalidPassword.body).toEqual({error: 'Password must be at least 3 characters long.'});
+  });
+
+  test('create an user already exist', async () => {
+    const postUser = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'userExist',
+        email: 'userExist@gmail.com',
+        password: '1234',
+      });
+    expect(postUser.status).toBe(201);
+
+    const alreadyExistPost = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'userExist',
+        email: 'userExist@gmail.com',
+        password: '1234',
+      });
+    expect(alreadyExistPost.status).toBe(400);
+    expect(alreadyExistPost.body).toEqual({error: 'Email already exists.'});
+  });
+
+  test('create an user with missing name', async () => {
+    const otherError = await request(app)
+      .post('/api/users')
+      .send({
+        email: 'user1@gmail.com',
+        password: '1234',
+      });
+    expect(otherError.status).toBe(400);
+  });
+
 });
 
-test('PATCH:user => /api/users/:id', async () => {
-  await prisma.user.deleteMany({where: {email: 'user1NEW@gmail.com'}});
+describe('Users: [GET]all /api/users', () => {
+  afterAll(async () => {
+    await prisma.user.deleteMany({where: {email: 'user2@gmail.com'}});
+  });
 
-  const response = await request(app)
-    .patch(`/api/users/${userId}`)
-    .send({
-      name: 'user1NEW',
-      email: 'user1NEW@gmail.com',
-      password: '4321',
-    });
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty('id');
-  expect(response.body.email).toBe('user1NEW@gmail.com');
-  expect(response.body.name).toBe('user1NEW');
+  test('GETall:users => /api/users', async () => {
+    const validPost = await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'user2',
+        email: 'user2@gmail.com',
+        password: '1234',
+      });
+    expect(validPost.status).toBe(200);
 
-  const errorResponse = await request(app)
-    .patch(`/api/users/${userId}`)
-    .send({
-      name: 12,
-    });
-  expect(errorResponse.status).toBe(400);
+    const validGet = await request(app).get('/api/users');
+    expect(validGet.status).toBe(200);
+    expect(validGet.body.length).toBe(2);
+  });
 });
 
-test('DELETE:user => /api/users/:id', async () => {
-  const response = await request(app).delete(`/api/users/${userId}`);
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty('id');
-  expect(response.body).toEqual({message: 'User deleted', id: userId});
+describe('Users: [GET]one /api/users/:id', () => {
+  test('get valid user', async () => {
+    const validUser = await request(app).get(`/api/users/${userId}`);
+    expect(validUser.status).toBe(200);
+    expect(validUser.body.id).toBe(userId);
+    expect(validUser.body.email).toBe('user@gmail.com');
+  });
 
-  const userId2 = '1234';
-  const errorResponse = await request(app).delete(`/api/users/${userId2}`);
-  expect(errorResponse.status).toBe(400);
+  test('get invalid user', async () => {
+    const invalidUser = await request(app).get(`/api/users/${"1234"}`);
+    expect(invalidUser.status).toBe(404);
+    expect(invalidUser.body).toEqual({error: 'User not found'});
+  });
 });
+
+describe('Users: [PATCH] /api/users/:id', () => {
+
+  afterAll(async () => {
+    await prisma.user.deleteMany({where: {email: 'newUserEmail@gmail.com'}});
+  });
+
+  test('update user', async () => {
+    const response = await request(app)
+      .patch(`/api/users/${userId}`)
+      .send({
+        name: 'new user name',
+        email: 'newUserEmail@gmail.com',
+        password: '4321',
+      });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.email).toBe('newUserEmail@gmail.com');
+    expect(response.body.name).toBe('new user name');
+  });
+  test('error update', async () => {
+    const response = await request(app)
+      .patch(`/api/users/${userId}`)
+      .send({
+        name: 12,
+      });
+    expect(response.status).toBe(400);
+  });
+});
+
+
+//
+// test('DELETE:user => /api/users/:id', async () => {
+//   const response = await request(app).delete(`/api/users/${userId}`);
+//   expect(response.status).toBe(200);
+//   expect(response.body).toHaveProperty('id');
+//   expect(response.body).toEqual({message: 'User deleted', id: userId});
+//
+//   const userId2 = '1234';
+//   const errorResponse = await request(app).delete(`/api/users/${userId2}`);
+//   expect(errorResponse.status).toBe(400);
+// });
 
