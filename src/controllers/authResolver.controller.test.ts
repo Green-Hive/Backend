@@ -1,9 +1,19 @@
-import {expect, test} from 'vitest';
+import {afterAll, expect, test} from 'vitest';
 import request from 'supertest';
 import app from '../app';
 import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
+let sessionCookie: string;
+
+afterAll(async () => {
+  const logout = await request(app)
+    .post('/api/auth/logout')
+    .set('Cookie', sessionCookie);
+  expect(logout.status).toBe(200);
+
+  await prisma.$disconnect(); // Close the Prisma client connection
+});
 
 test('GET /me when not logged', async () => {
   const response = await request(app).get('/me');
@@ -28,7 +38,7 @@ test('POST:register /api/auth/register', async () => {
   const setCookieHeader: any = response.headers['set-cookie'];
   expect(setCookieHeader).toBeDefined();
 
-  const sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
+  sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
   expect(sessionCookie).toBeDefined();
 });
 

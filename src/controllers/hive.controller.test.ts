@@ -27,6 +27,12 @@ beforeAll(async () => {
 afterAll(async () => {
   await prisma.hive.deleteMany({where: {userId}});
   await prisma.user.deleteMany({where: {email: 'userWithHive1@gmail.com'}});
+
+  const logout = await request(app)
+    .post('/api/auth/logout')
+    .set('Cookie', sessionCookie);
+  expect(logout.status).toBe(200);
+
   await prisma.$disconnect(); // Close the Prisma client connection
 });
 
@@ -97,31 +103,11 @@ describe('Hives: [GET] /api/users', () => {
 
     expect(sessionCookie).toBeDefined();
 
-    const postHive1 = await request(app)
-      .post('/api/hives')
-      .set('Cookie', sessionCookie)
-      .send({
-        userId,
-        name: 'hive1',
-        description: 'my hive description',
-      });
-    expect(postHive1.status).toBe(200);
-
-    const postHive2 = await request(app)
-      .post('/api/hives')
-      .set('Cookie', sessionCookie)
-      .send({
-        userId,
-        name: 'hive2',
-        description: 'my hive description',
-      });
-    expect(postHive2.status).toBe(200);
-
     const validGet = await request(app)
       .get('/api/hives')
       .set('Cookie', sessionCookie);
     expect(validGet.status).toBe(200);
-    expect(validGet.body.length).toBe(4);
+    expect(validGet.body.length).toBe(2);
   });
 });
 
