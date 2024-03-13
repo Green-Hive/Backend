@@ -101,7 +101,7 @@ export const deleteHive = async (req: Request, res: Response) => {
 
   try {
     await prisma.hive.delete({where: {id}});
-    res.status(200).json({message: 'Hive deleted.'});
+    res.status(200).json({message: 'Hive deleted.', id});
   } catch (error: any) {
     console.error(error);
     return res.status(400).json({error: error.message});

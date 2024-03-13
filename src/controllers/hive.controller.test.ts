@@ -199,7 +199,8 @@ describe('DELETE /api/hives/:id', () => {
       .delete(`/api/hives/${hiveId}`)
       .set('Cookie', sessionCookie);
     expect(validDelete.status).toBe(200);
-    expect(validDelete.body).toEqual({message: 'Hive deleted.'});
+    expect(validDelete.body).toHaveProperty('id');
+    expect(validDelete.body).toEqual({message: 'Hive deleted.', id: hiveId});
   });
 
   test('error deleted hive', async () => {

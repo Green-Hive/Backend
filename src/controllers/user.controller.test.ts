@@ -148,7 +148,6 @@ describe('Users: [GET]one /api/users/:id', () => {
 });
 
 describe('Users: [PATCH] /api/users/:id', () => {
-
   afterAll(async () => {
     await prisma.user.deleteMany({where: {email: 'newUserEmail@gmail.com'}});
   });
@@ -176,16 +175,17 @@ describe('Users: [PATCH] /api/users/:id', () => {
   });
 });
 
+describe('Users: [DELETE] /api/users/:id', () => {
+  test('delete user', async () => {
+    const validDelete = await request(app).delete(`/api/users/${userId}`);
+    expect(validDelete.status).toBe(200);
+    expect(validDelete.body).toHaveProperty('id');
+    expect(validDelete.body).toEqual({message: 'User deleted', id: userId});
+  });
 
-//
-// test('DELETE:user => /api/users/:id', async () => {
-//   const response = await request(app).delete(`/api/users/${userId}`);
-//   expect(response.status).toBe(200);
-//   expect(response.body).toHaveProperty('id');
-//   expect(response.body).toEqual({message: 'User deleted', id: userId});
-//
-//   const userId2 = '1234';
-//   const errorResponse = await request(app).delete(`/api/users/${userId2}`);
-//   expect(errorResponse.status).toBe(400);
-// });
+  test('delete invalid user', async () => {
+    const invalidDelete = await request(app).delete(`/api/users/${"1234"}`);
+    expect(invalidDelete.status).toBe(400);
+  });
+});
 
