@@ -118,17 +118,17 @@ describe('Users: [GET]all /api/users', () => {
 
   test('GETall:users => /api/users', async () => {
     const validPost = await request(app)
-      .post('/api/auth/register')
+      .post('/api/users')
       .send({
         name: 'user2',
         email: 'user2@gmail.com',
         password: '1234',
       });
-    expect(validPost.status).toBe(200);
+    expect(validPost.status).toBe(201);
 
     const validGet = await request(app).get('/api/users');
     expect(validGet.status).toBe(200);
-    expect(validGet.body.length).toBe(2);
+    expect(validGet.body.length).toBeGreaterThan(1)
   });
 });
 

@@ -7,7 +7,7 @@ export const postUser = async (req: Request, res: Response) => {
   const {name, email, id, password}: {name: string, email: string, id: string, password: string} = req.body;
 
   if (!password) return res.status(400).json({error: 'Password is required.'});
-  if (password && password.length < 3) return res.status(400).json({error: 'Password must be at least 3 characters long.'});
+  if (password.length < 3) return res.status(400).json({error: 'Password must be at least 3 characters long.'});
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);

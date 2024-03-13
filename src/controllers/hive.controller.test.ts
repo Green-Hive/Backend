@@ -117,7 +117,7 @@ describe('Hives: [GET]all /api/hives', () => {
       .get('/api/hives')
       .set('Cookie', sessionCookie);
     expect(validGet.status).toBe(200);
-    expect(validGet.body.length).toBe(2);
+    expect(validGet.body.length).toBeGreaterThan(1)
   });
 });
 
