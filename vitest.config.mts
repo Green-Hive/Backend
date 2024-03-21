@@ -10,5 +10,6 @@ export default defineConfig({
       exclude: [...configDefaults.coverage.exclude, '**/prisma/**', '**/src/utils/swagger/**'],
       provider: 'v8',
     },
+    environment:"node",
   },
 });

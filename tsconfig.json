@@ -2,13 +2,15 @@
   "compilerOptions": {
     "module": "NodeNext",
     "target": "ES2020",
-    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "types": ["vitest/globals"],
     "moduleResolution": "NodeNext",
     "sourceMap": true,
+    "noImplicitAny": true,
     "outDir": "dist",
-    "baseUrl": ".",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
-    "noEmit": false
-  }
+    "noEmit": false,
+  },
+    "include": ["src/**/*"],
 }

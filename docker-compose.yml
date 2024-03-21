@@ -11,6 +11,16 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: green_hive_app
+    restart: always
+    ports:
+      - '4000:4000'
+    depends_on:
+      - db
+
 volumes:
   db:
     driver: local
