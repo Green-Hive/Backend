@@ -1,13 +1,14 @@
-FROM node:latest
+FROM node:19-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-RUN yarn
+## Installation des dépendances
+RUN yarn build
 
 COPY . .
 
 EXPOSE 4000
 
-CMD ["yarn", "dev"]
+CMD ["yarn", "start"]
