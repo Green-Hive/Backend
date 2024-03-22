@@ -1,4 +1,4 @@
-import app from "./app";
+import app from "./app.js";
 import figlet from "figlet";
 
 import('terminal-link').then((terminalLink) => {

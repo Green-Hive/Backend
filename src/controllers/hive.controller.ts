@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import prisma from '../services/prisma';
+import prisma from '../services/prisma.js';
 
 export const postHive = async (req: Request, res: Response) => {
   const {userId, name, description}: {

@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import {getGoogleAuthInfo, requestGoogleAuthUrl} from "../controllers/authGoogle.controller";
-import {login, logout, register} from "../controllers/authResolver.controller";
+import {getGoogleAuthInfo, requestGoogleAuthUrl} from "../controllers/authGoogle.controller.js";
+import {login, logout, register} from "../controllers/authResolver.controller.js";
 
 const routes = Router();
 

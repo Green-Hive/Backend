@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {deleteHive, getAllHives, getHive, patchHive, postHive} from "../controllers/hive.controller";
+import {deleteHive, getAllHives, getHive, patchHive, postHive} from "../controllers/hive.controller.js";
 
 const routes = Router();
 

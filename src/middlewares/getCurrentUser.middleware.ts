@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import prisma from "../services/prisma";
+import prisma from "../services/prisma.js";
 
 declare module 'express-session' {
   interface SessionData {

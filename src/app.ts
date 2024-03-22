@@ -2,15 +2,15 @@ import express from 'express';
 import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger/swagger.json';
-import userRoutes from './routes/user.routes';
-import hiveRoutes from './routes/hive.routes';
-import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes.js';
+import hiveRoutes from './routes/hive.routes.js';
+import authRoutes from './routes/auth.routes.js';
 import session from 'express-session';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import PgSession from 'connect-pg-simple';
-import getCurrentUser from './middlewares/getCurrentUser.middleware';
-import checkAuth from './middlewares/checkAuth.middleware';
+import getCurrentUser from './middlewares/getCurrentUser.middleware.js';
+import checkAuth from './middlewares/checkAuth.middleware.js';
 
 const app = express();
 const corsOptions = {
@@ -65,6 +65,6 @@ app.get('/me', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/hives', checkAuth, hiveRoutes);
-app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export default app;

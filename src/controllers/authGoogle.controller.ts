@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import {NextFunction, Request, Response} from "express";
 import {OAuth2Client} from "google-auth-library";
-import prisma from "../services/prisma";
+import prisma from "../services/prisma.js";
 import {Provider} from "@prisma/client";
 
 export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
