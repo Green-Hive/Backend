@@ -48,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
     required: true,
     description: 'name*, email* , password*: required',
     schema: {
-        email: 'example@email.com',
+        email: 'example@gmail.com',
         password: '****',
         name: 'John Doe',
     }

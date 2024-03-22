@@ -26,7 +26,7 @@ app.use(cors(corsOptions));
 app.use(
   session({
     name: 'SESSION',
-    secret: process.env.SESSION_SECRET as string,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: new (PgSession(session))({
