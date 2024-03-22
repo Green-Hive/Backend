@@ -1,5 +1,21 @@
 version: '3.8'
 services:
+  backend:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: green_hive_app
+    restart: always
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - db
+
   db:
     container_name: green_hive_db
     image: postgres:14.1-alpine
@@ -11,15 +27,6 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
-
-  api:
-    build: .
-    container_name: green_hive_app
-    restart: always
-    ports:
-      - '4000:4000'
-    depends_on:
-      - db
 
 volumes:
   db:
