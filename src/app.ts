@@ -1,7 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './utils/swagger/swagger.json' assert { type: "json" };
+import swaggerDocument from './utils/swagger/swagger.json' assert {type: "json"};
 import userRoutes from './routes/user.routes.js';
 import hiveRoutes from './routes/hive.routes.js';
 import authRoutes from './routes/auth.routes.js';

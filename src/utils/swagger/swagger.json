@@ -452,6 +452,50 @@
           }
         }
       }
+    },
+    "/api/hives/data/": {
+      "post": {
+        "tags": [
+          "HiveData"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hiveId": {
+                  "type": "string",
+                  "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
+                },
+                "temp": {
+                  "type": "number",
+                  "example": 20
+                },
+                "hum": {
+                  "type": "number",
+                  "example": 50
+                },
+                "weight": {
+                  "type": "number",
+                  "example": 100
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
     }
   }
 }

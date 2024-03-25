@@ -21,7 +21,7 @@ export const postHive = async (req: Request, res: Response) => {
       return res.status(400).json({error: error.message});
     }
   }
-// #swagger.tags = ['Hives']
+  // #swagger.tags = ['Hives']
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
@@ -30,7 +30,6 @@ export const postHive = async (req: Request, res: Response) => {
         userId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
         name: 'my hive',
         description: 'my hive description',
-    }
     }
   } */
 
@@ -57,7 +56,7 @@ export const getHive = async (req: Request, res: Response) => {
       where: {id},
     });
 
-    if (!hive) return res.status(404).json({ error: 'Hive not found.' });
+    if (!hive) return res.status(404).json({error: 'Hive not found.'});
     return res.status(200).json(hive);
   } catch (error: any) {
     console.error(error);

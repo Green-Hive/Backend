@@ -53,7 +53,6 @@ model Hive {
 model HiveData {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
   hive        Hive     @relation(fields: [hiveId], references: [id], onDelete: Cascade)
   hiveId      String
   temp        Float    @default(0) // Température de 0 à 360°c (float),
