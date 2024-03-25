@@ -28,6 +28,7 @@ export const postData = async (req: Request, res: Response) => {
         temp: 20,
         hum: 50,
         weight: 100,
+        inclination: false,
     }
   } */
 };
