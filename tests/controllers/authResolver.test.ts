@@ -11,7 +11,53 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe('Auth register: [POST] /api/auth/register', () => {
+describe('getLoggedUser: [GET] /api/auth/me', () => {
+  afterAll(async () => {
+    await prisma.user.deleteMany({where: {email: 'superUser@gmail.com'}});
+  });
+
+  test('register an user and get it', async () => {
+    const response = await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'superUser',
+        email: 'superUser@gmail.com',
+        password: '1234',
+      });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+
+    const setCookieHeader: any = response.headers['set-cookie'];
+    sessionCookie = setCookieHeader.find((cookie: string) => cookie.startsWith('SESSION'));
+    expect(sessionCookie).toBeDefined();
+
+    const user = await request(app)
+      .get('/api/auth/me')
+      .set('Cookie', sessionCookie);
+    expect(user.status).toBe(200);
+    expect(user.body.message).toBe('User is logged');
+    expect(user.body.userInfo).toHaveProperty('id');
+    expect(user.body.userInfo.email).toBe('superUser@gmail.com');
+    expect(user.body.userInfo.name).toBe('superUser');
+    expect(user.body.userInfo.provider).toBe('LOCAL');
+    expect(user.body.userInfo.role).toBe('USER');
+
+    const logout = await request(app)
+      .post('/api/auth/logout')
+      .set('Cookie', sessionCookie);
+    expect(logout.status).toBe(200);
+  });
+
+  test('get user without being logged', async () => {
+    const user = await request(app)
+      .get('/api/auth/me');
+    expect(user.status).toBe(404);
+    expect(user.body.message).toEqual('User is not logged');
+    expect(user.body.userInfo).toBeNull();
+  });
+});
+
+describe('register: [POST] /api/auth/register', () => {
   afterAll(async () => {
     await prisma.user.deleteMany({where: {email: 'authUser@gmail.com'}});
     await prisma.user.deleteMany({where: {email: 'googleUser@gmail.com'}});
@@ -119,7 +165,7 @@ describe('Auth register: [POST] /api/auth/register', () => {
 
 });
 
-describe('Auth login: [POST] /api/auth/login', () => {
+describe('login: [POST] /api/auth/login', () => {
   afterAll(async () => {
     await prisma.user.deleteMany({where: {email: 'userLogin@gmail.com'}});
 
@@ -133,7 +179,6 @@ describe('Auth login: [POST] /api/auth/login', () => {
         email: 'userLogin@gmail.com',
         password: '1234',
       });
-    console.log(user.body);
     expect(user.status).toBe(201);
 
     const loginResponse = await request(app)
@@ -188,9 +233,7 @@ describe('Auth login: [POST] /api/auth/login', () => {
   });
 });
 
-
-
-describe('Auth logout: [POST] /api/auth/logout', () => {
+describe('logout: [POST] /api/auth/logout', () => {
 
   test('not logged', async () => {
     const failLogoutResponse = await request(app)

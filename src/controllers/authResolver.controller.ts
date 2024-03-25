@@ -3,6 +3,19 @@ import prisma from '../services/prisma.js';
 import {Provider} from '@prisma/client';
 import bcrypt from 'bcrypt';
 
+export const getLoggedUser = async (req: Request, res: Response) => {
+  const {userInfo} = res.locals;
+
+
+  if (req.session.userId) {
+    const {password, ...userInfoWithoutPassword} = userInfo;
+    return res.status(200).json({message: 'User is logged', userInfo: userInfoWithoutPassword});
+  } else {
+    return res.status(404).json({message: 'User is not logged', userInfo: null});
+  }
+  // #swagger.tags = ['Auth']
+}
+
 export const register = async (req: Request, res: Response) => {
   const {email, password, name} = req.body;
 
@@ -58,6 +71,10 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const {email, password} = req.body;
 
+  if (req.session.userId) {
+    return res.status(200).json({ message: 'User is already logged in', userId: req.session.userId });
+  }
+
   if (email && password) {
     const user = await prisma.user.findUnique({where: {email}});
 
@@ -66,7 +83,7 @@ export const login = async (req: Request, res: Response) => {
 
       if (passwordMatch) {
         req.session.userId = user.id;
-        return res.status(200).json(user);
+        return res.status(200).json(user.id);
       } else return res.status(400).json({error: 'Invalid credentials.'});
 
     } else return res.status(400).json({error: 'User not found.'});
@@ -78,7 +95,7 @@ export const login = async (req: Request, res: Response) => {
     required: true,
     description: 'email* , password*: required',
     schema: {
-        email: 'example@email.com',
+        email: 'example@gmail.com',
         password: '****',
     }
 } */

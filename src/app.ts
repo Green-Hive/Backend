@@ -47,19 +47,6 @@ app.use(
 
 //MIDDLEWARES//
 app.use(getCurrentUser);
-app.get('/me', (req, res) => {
-  const {userInfo} = res.locals;
-
-  console.log('=> ME <=\n');
-  console.log('session=', req.session, '\n');
-  console.log('locals=', res.locals, '\n');
-
-  if (req.session.userId) {
-    res.status(200).json({message: 'User is logged', userInfo});
-  } else {
-    res.status(404).json({message: 'User is not logged', userInfo: null});
-  }
-});
 
 // ROUTES //
 app.use('/api/auth', authRoutes);

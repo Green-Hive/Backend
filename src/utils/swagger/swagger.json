@@ -11,8 +11,11 @@
     "http"
   ],
   "paths": {
-    "/me": {
+    "/api/auth/me": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -20,39 +23,6 @@
           },
           "404": {
             "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/api/auth/google/": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/auth/google/callback": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "code",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
           }
         }
       }
@@ -74,7 +44,7 @@
               "properties": {
                 "email": {
                   "type": "string",
-                  "example": "example@email.com"
+                  "example": "example@gmail.com"
                 },
                 "password": {
                   "type": "string",
@@ -115,7 +85,7 @@
               "properties": {
                 "email": {
                   "type": "string",
-                  "example": "example@email.com"
+                  "example": "example@gmail.com"
                 },
                 "password": {
                   "type": "string",
@@ -150,6 +120,39 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/google/": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
