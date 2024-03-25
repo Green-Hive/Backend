@@ -8,7 +8,7 @@ This repository contains the backend API for managing bee hive data for the Gree
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Scripts](#scripts)s
+- [Scripts](#scripts)
 - [License](#license)
 
 ## Introduction
