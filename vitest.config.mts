@@ -11,14 +11,5 @@ export default defineConfig({
       exclude: [...configDefaults.coverage.exclude, '**/prisma/**', '**/src/utils/swagger/**'],
       provider: 'v8',
     },
-    environment:"node",
   },
-  resolve: {
-    alias: [
-      {
-        find: '@', // Define your alias here (e.g., '@')
-        replacement: path.resolve(__dirname, 'src') // Specify the base URL or base directory here
-      }
-    ]
-  }
 });

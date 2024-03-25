@@ -141,7 +141,7 @@ describe('Hives: [GET]one /api/hives/:id', () => {
   });
 });
 
-describe('PATCH /api/hives/:id', () => {
+describe('Hives: PATCH /api/hives/:id', () => {
   test('update a hive', async () => {
     const validPatch = await request(app)
       .patch(`/api/hives/${hiveId}`)
@@ -193,7 +193,7 @@ describe('PATCH /api/hives/:id', () => {
   });
 });
 
-describe('DELETE /api/hives/:id', () => {
+describe('Hives: DELETE /api/hives/:id', () => {
   test('delete a hive', async () => {
     const validDelete = await request(app)
       .delete(`/api/hives/${hiveId}`)
