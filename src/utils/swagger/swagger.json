@@ -482,9 +482,61 @@
                 "weight": {
                   "type": "number",
                   "example": 100
+                },
+                "inclination": {
+                  "type": "boolean",
+                  "example": false
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/data/{id}": {
+      "delete": {
+        "tags": [
+          "HiveData"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/data/all/{hiveId}": {
+      "delete": {
+        "tags": [
+          "HiveData"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "hiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

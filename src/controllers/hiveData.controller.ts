@@ -33,18 +33,18 @@ export const postData = async (req: Request, res: Response) => {
   } */
 };
 
-// export const getAllHives = async (_req: Request, res: Response) => {
-//   try {
-//     const hives = await prisma.hive.findMany({
-//       orderBy: {createdAt: 'desc'},
-//     });
-//     return res.status(200).json(hives);
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(500).json({error: error.message});
-//   }
-//   // #swagger.tags = ['Hives']
-// };
+export const getAllData = async (_req: Request, res: Response) => {
+  try {
+    const data = await prisma.hiveData.findMany({
+      orderBy: {createdAt: 'desc'},
+    });
+    return res.status(200).json(data);
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({error: error.message});
+  }
+  // #swagger.tags = ['HiveData']
+};
 //
 // export const getHive = async (req: Request, res: Response) => {
 //   const {id} = req.params;
@@ -62,46 +62,29 @@ export const postData = async (req: Request, res: Response) => {
 //   }
 //   // #swagger.tags = ['Hives']
 // };
-//
-// export const patchHive = async (req: Request, res: Response) => {
-//   const {id} = req.params;
-//   const {name, description} = req.body;
-//
-//   try {
-//     const hive = await prisma.hive.update({
-//       where: {id},
-//       data: {name, description},
-//     });
-//     return res.status(200).json(hive);
-//   } catch (error: any) {
-//     if (error.code === 'P2002' && error.meta.target.includes('name')) {
-//       return res.status(400).json({error: 'Name already taken.'});
-//     } else {
-//       console.error(error);
-//       return res.status(400).json({error: error.message});
-//     }
-//   }
-//   // #swagger.tags = ['Hives']
-//   /* #swagger.parameters['body'] = {
-//     in: 'body',
-//     required: true,
-//     schema: {
-//         name: 'my hive',
-//         description: 'my hive description',
-//         data: '{}',
-//     }
-//   } */
-// };
-//
-// export const deleteHive = async (req: Request, res: Response) => {
-//   const {id} = req.params;
-//
-//   try {
-//     await prisma.hive.delete({where: {id}});
-//     res.status(200).json({message: 'Hive deleted.', id});
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(400).json({error: error.message});
-//   }
-//   // #swagger.tags = ['Hives']
-// };
+
+export const deleteData = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
+  try {
+    await prisma.hiveData.delete({where: {id}});
+    res.status(200).json({message: 'Hive data deleted.', id});
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({error: error.message});
+  }
+  // #swagger.tags = ['HiveData']
+};
+
+export const deleteAllData = async (req: Request, res: Response) => {
+  const {hiveId} = req.params;
+
+  try {
+    await prisma.hiveData.deleteMany({where: {hiveId}});
+    res.status(200).json({message: 'All hive data deleted.'});
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({error: error.message});
+  }
+  // #swagger.tags = ['HiveData']
+}

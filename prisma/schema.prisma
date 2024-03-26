@@ -45,7 +45,7 @@ model Hive {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   description String     @default("")
-  user        User       @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   beeData     HiveData[]
 }
