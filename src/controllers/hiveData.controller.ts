@@ -33,9 +33,12 @@ export const postData = async (req: Request, res: Response) => {
   } */
 };
 
-export const getAllData = async (_req: Request, res: Response) => {
+export const getAllData = async (req: Request, res: Response) => {
+  const {hiveId} = req.params;
+
   try {
     const data = await prisma.hiveData.findMany({
+      where: {hiveId},
       orderBy: {createdAt: 'desc'},
     });
     return res.status(200).json(data);
@@ -45,23 +48,23 @@ export const getAllData = async (_req: Request, res: Response) => {
   }
   // #swagger.tags = ['HiveData']
 };
-//
-// export const getHive = async (req: Request, res: Response) => {
-//   const {id} = req.params;
-//
-//   try {
-//     const hive = await prisma.hive.findUnique({
-//       where: {id},
-//     });
-//
-//     if (!hive) return res.status(404).json({ error: 'Hive not found.' });
-//     return res.status(200).json(hive);
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(500).json({error: error.message});
-//   }
-//   // #swagger.tags = ['Hives']
-// };
+
+export const getOneData = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
+  try {
+    const data = await prisma.hiveData.findUnique({
+      where: {id},
+    });
+
+    if (!data) return res.status(404).json({error: 'Hive not found.'});
+    return res.status(200).json(data);
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({error: error.message});
+  }
+  // #swagger.tags = ['HiveData']
+};
 
 export const deleteData = async (req: Request, res: Response) => {
   const {id} = req.params;

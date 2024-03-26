@@ -48,7 +48,7 @@ export const getAllHives = async (_req: Request, res: Response) => {
   // #swagger.tags = ['Hives']
 };
 
-export const getHive = async (req: Request, res: Response) => {
+export const getOneHive = async (req: Request, res: Response) => {
   const {id} = req.params;
 
   try {
