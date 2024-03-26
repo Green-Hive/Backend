@@ -25,7 +25,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await prisma.user.deleteMany({where: {email: 'user@gmail.com'}});
+  await prisma.user.deleteMany({where: {id: userId}});
 
   const logout = await request(app)
     .post('/api/auth/logout')

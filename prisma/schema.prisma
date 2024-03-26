@@ -55,8 +55,8 @@ model HiveData {
   createdAt   DateTime @default(now())
   hive        Hive     @relation(fields: [hiveId], references: [id], onDelete: Cascade)
   hiveId      String
-  temp        Float    @default(0) // Température de 0 à 360°c (float),
-  hum         Float    @default(0) // Humidité de 0 à 100% (float)
+  temperature Float    @default(0) // Température de 0 à 360°c (float),
+  humidity    Float    @default(0) // Humidité de 0 à 100% (float)
   weight      Float    @default(0) // Poids en g (float)
   inclination Boolean  @default(false) // Si la ruche est droite ou non (boolean)timestamp   DateTime @default(now()) // Date des données relevées toute les 5 secondes (ISO 8601)
 }

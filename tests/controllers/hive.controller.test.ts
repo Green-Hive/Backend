@@ -37,7 +37,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await prisma.hive.deleteMany({where: {userId}});
-  await prisma.user.deleteMany({where: {email: 'userWithHive1@gmail.com'}});
+  await prisma.user.deleteMany({where: {id: userId}});
 
   const logout = await request(app)
     .post('/api/auth/logout')
@@ -67,13 +67,13 @@ describe('Hives: [POST] /api/hives', () => {
 
   test('return error if hive name already exists', async () => {
     const validPost = await request(app)
-        .post('/api/hives')
-        .set('Cookie', sessionCookie)
-        .send({
-          userId,
-          name: 'my hive2',
-          description: 'my hive description',
-        });
+      .post('/api/hives')
+      .set('Cookie', sessionCookie)
+      .send({
+        userId,
+        name: 'my hive2',
+        description: 'my hive description',
+      });
     expect(validPost.status).toBe(200);
 
     const invalidPost = await request(app)

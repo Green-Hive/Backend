@@ -2,17 +2,17 @@ import {Request, Response} from 'express';
 import prisma from '../services/prisma.js';
 
 export const postData = async (req: Request, res: Response) => {
-  const {hiveId, temp, hum, weight}: {
+  const {hiveId, temperature, humidity, weight, inclination}: {
     hiveId: string,
-    temp: number,
-    hum: number,
+    temperature: number,
+    humidity: number,
     weight: number,
-    inclination: number,
+    inclination: boolean,
   } = req.body;
 
   try {
     const data = await prisma.hiveData.create({
-      data: {hiveId, temp, hum, weight},
+      data: {hiveId, temperature, humidity, weight, inclination},
     });
     return res.status(200).json(data);
   } catch (error: any) {
@@ -82,12 +82,18 @@ export const deleteData = async (req: Request, res: Response) => {
 export const deleteAllData = async (req: Request, res: Response) => {
   const {hiveId} = req.params;
 
+  if (!hiveId) {
+    return res.status(400).json({error: 'Hive id is required.'});
+  }
+
   try {
-    await prisma.hiveData.deleteMany({where: {hiveId}});
-    res.status(200).json({message: 'All hive data deleted.'});
+    const deletedData = await prisma.hiveData.deleteMany({where: {hiveId}});
+    if (deletedData.count === 0) {
+      return res.status(404).json({error: 'No hive data found for the provided ID.'});
+    }
+    return res.status(200).json({message: 'All hive data deleted.', deletedCount: deletedData.count});
   } catch (error: any) {
     console.error(error);
-    return res.status(400).json({error: error.message});
+    return res.status(500).json({error: 'Internal server error.'});
   }
-  // #swagger.tags = ['HiveData']
-}
+};
