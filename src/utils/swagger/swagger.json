@@ -5,10 +5,11 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "localhost:4000",
+  "host": "roundhouse.proxy.rlwy.net:22120",
   "basePath": "/",
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "paths": {
     "/api/auth/me": {
@@ -574,9 +575,6 @@
         }
       },
       "delete": {
-        "tags": [
-          "HiveData"
-        ],
         "description": "",
         "parameters": [
           {
@@ -592,6 +590,12 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
