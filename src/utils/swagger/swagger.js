@@ -5,8 +5,8 @@ const doc = {
         title: 'Green Hive API',
         description: 'Description'
     },
-    host: 'localhost:4000',
-    schemes: ['http'],
+    host: 'roundhouse.proxy.rlwy.net:22120', // Use the host from DATABASE_URL
+    schemes: ['http', 'https'], // Support both HTTP and HTTPS
 };
 
 const outputFile = './swagger.json';
