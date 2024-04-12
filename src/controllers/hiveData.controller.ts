@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import prisma from '../services/prisma.js';
+import * as Sentry from "@sentry/node";
 
 export const postData = async (req: Request, res: Response) => {
   const {hiveId, temperature, humidity, weight, inclination}: {
@@ -16,7 +17,7 @@ export const postData = async (req: Request, res: Response) => {
     });
     return res.status(200).json(data);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'postData' } });
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['HiveData']
@@ -43,7 +44,7 @@ export const getAllData = async (req: Request, res: Response) => {
     });
     return res.status(200).json(data);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'getAllData' } });
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['HiveData']
@@ -57,10 +58,16 @@ export const getOneData = async (req: Request, res: Response) => {
       where: {id},
     });
 
-    if (!data) return res.status(404).json({error: 'Hive not found.'});
-    return res.status(200).json(data);
+    if (!data) {
+      Sentry.captureMessage("Hive not found.", {
+        level: 'info',
+        tags: { action: 'getOneData' },
+      });
+      return res.status(404).json({error: 'Hive not found.'});
+    }
+      return res.status(200).json(data);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'getOneData' } });
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['HiveData']
@@ -73,7 +80,7 @@ export const deleteData = async (req: Request, res: Response) => {
     await prisma.hiveData.delete({where: {id}});
     res.status(200).json({message: 'Hive data deleted.', id});
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'deleteData' } });
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['HiveData']
@@ -83,17 +90,25 @@ export const deleteAllData = async (req: Request, res: Response) => {
   const {hiveId} = req.params;
 
   if (!hiveId) {
+    Sentry.captureMessage("Hive id is required.", {
+      level: 'info',
+      tags: { action: 'deleteAllData' },
+    });
     return res.status(400).json({error: 'Hive id is required.'});
   }
 
   try {
     const deletedData = await prisma.hiveData.deleteMany({where: {hiveId}});
     if (deletedData.count === 0) {
+      Sentry.captureMessage("No hive data found for the provided ID.", {
+        level: 'info',
+        tags: { action: 'deleteAllData' },
+      });
       return res.status(404).json({error: 'No hive data found for the provided ID.'});
     }
     return res.status(200).json({message: 'All hive data deleted.', deletedCount: deletedData.count});
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'deleteAllData' } });
     return res.status(500).json({error: 'Internal server error.'});
   }
 };

@@ -3,6 +3,7 @@ import {NextFunction, Request, Response} from "express";
 import {OAuth2Client} from "google-auth-library";
 import prisma from "../services/prisma.js";
 import {Provider} from "@prisma/client";
+import * as Sentry from "@sentry/node";
 
 export const requestGoogleAuthUrl = async (req: Request, res: Response) => {
   res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
@@ -56,20 +57,24 @@ export const getGoogleAuthInfo = async (req: Request, res: Response, next: NextF
             provider: Provider.GOOGLE,
           },
         });
-        console.log('Google user updated!');
       } else {
-        console.error('User exists!');
+        Sentry.captureMessage("User is already exists.", {
+          level: 'info',
+          tags: { action: 'getGoogleAuthInfo' },
+          extra: {
+            'email': email,
+          }
+        });
       }
     } else {
       await prisma.user.create({
         data: {name, email, id, provider: Provider.GOOGLE},
       });
-      console.log('Google user created!');
     }
     req.session.userId = id;
     return res.redirect(process.env.CLIENT_URL);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, { tags: { action: 'getGoogleAuthInfo' } });
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Auth']
