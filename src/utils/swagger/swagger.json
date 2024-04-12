@@ -5,11 +5,10 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "backend-production-3c19.up.railway.app",
+  "host": "0.0.0.0:4000",
   "basePath": "/",
   "schemes": [
-    "http",
-    "https"
+    "http, https"
   ],
   "paths": {
     "/api/auth/me": {
