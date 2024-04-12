@@ -5,7 +5,7 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "backend-production-3c19.up.railway.app/",
+  "host": "backend-production-3c19.up.railway.app",
   "basePath": "/",
   "schemes": [
     "http",
