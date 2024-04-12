@@ -14,7 +14,7 @@ import checkAuth from './middlewares/checkAuth.middleware.js';
 
 const app = express();
 const corsOptions = {
-  origin: true,
+  origin: "*",
   credentials: true,
 };
 
