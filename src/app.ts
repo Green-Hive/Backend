@@ -23,15 +23,11 @@ const corsOptions = {
 Sentry.init({
   dsn: 'https://111e230f04e40176caf0e4e099808156@o4507072641695744.ingest.de.sentry.io/4507072722501712',
   integrations: [
-    // enable HTTP calls tracing
     new Sentry.Integrations.Http({tracing: true}),
-    // enable Express.js middleware tracing
     new Sentry.Integrations.Express({app}),
     nodeProfilingIntegration(),
   ],
-  // Performance Monitoring
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
-  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
   environment: 'develop',
 });
@@ -76,14 +72,8 @@ app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/debug-sentry', function mainHandler(req, res) {
   throw new Error('My first Sentry error!');
 });
-
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
-
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
-
-// The error handler must be registered before any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
+app.use(Sentry.Handlers.requestHandler()); // The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.tracingHandler()); // TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.errorHandler()); // The error handler must be registered before any other error middleware and after all controllers
 
 export default app;

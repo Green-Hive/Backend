@@ -117,4 +117,5 @@ export const deleteAllData = async (req: Request, res: Response) => {
     Sentry.captureException(error, {tags: {action: 'deleteAllData'}});
     return res.status(500).json({error: 'Internal server error.'});
   }
+  // #swagger.tags = ['HiveData']
 };

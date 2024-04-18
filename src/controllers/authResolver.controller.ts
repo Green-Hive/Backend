@@ -39,15 +39,9 @@ export const register = async (req: Request, res: Response) => {
         },
       });
     }
-    if (!email) {
-      return res.status(400).json({error: 'Email is required.'});
-    }
-    if (!name || name.length < 3) {
-      return res.status(400).json({error: 'Name must be at least 3 characters long.'});
-    }
-    if (!password || password.length < 3) {
-      return res.status(400).json({error: 'Password must be at least 3 characters long.'});
-    }
+    if (!email) return res.status(400).json({error: 'Email is required.'});
+    if (!name || name.length < 3) return res.status(400).json({error: 'Name must be at least 3 characters long.'});
+    if (!password || password.length < 3) return res.status(400).json({error: 'Password must be at least 3 characters long.'});
 
     const existingUser = await prisma.user.findUnique({
       where: {email},
