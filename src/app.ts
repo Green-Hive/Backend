@@ -1,8 +1,8 @@
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import {nodeProfilingIntegration} from '@sentry/profiling-node';
 import express from 'express';
 import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './utils/swagger/swagger.json' assert {type: "json"};
+import swaggerDocument from './utils/swagger/swagger.json' assert {type: 'json'};
 import userRoutes from './routes/user.routes.js';
 import hiveRoutes from './routes/hive.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -12,7 +12,7 @@ import cookieParser from 'cookie-parser';
 import PgSession from 'connect-pg-simple';
 import getCurrentUser from './middlewares/getCurrentUser.middleware.js';
 import checkAuth from './middlewares/checkAuth.middleware.js';
-import * as Sentry from "@sentry/node";
+import * as Sentry from '@sentry/node';
 
 const app = express();
 const corsOptions = {
@@ -21,19 +21,19 @@ const corsOptions = {
 };
 
 Sentry.init({
-  dsn: "https://111e230f04e40176caf0e4e099808156@o4507072641695744.ingest.de.sentry.io/4507072722501712",
+  dsn: 'https://111e230f04e40176caf0e4e099808156@o4507072641695744.ingest.de.sentry.io/4507072722501712',
   integrations: [
     // enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
+    new Sentry.Integrations.Http({tracing: true}),
     // enable Express.js middleware tracing
-    new Sentry.Integrations.Express({ app }),
+    new Sentry.Integrations.Express({app}),
     nodeProfilingIntegration(),
   ],
   // Performance Monitoring
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set sampling rate for profiling - this is relative to tracesSampleRate
   profilesSampleRate: 1.0,
-  environment: "develop",
+  environment: 'develop',
 });
 
 //INITIALIZE//
@@ -60,7 +60,7 @@ app.use(
       path: '/',
       sameSite: 'lax',
     },
-  }),
+  })
 );
 
 //MIDDLEWARES//
@@ -72,8 +72,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/hives', checkAuth, hiveRoutes);
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
+app.get('/debug-sentry', function mainHandler(req, res) {
+  throw new Error('My first Sentry error!');
 });
 
 //Sentry request handler
@@ -82,11 +82,6 @@ app.use(Sentry.Handlers.requestHandler());
 
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
-
-// All your controllers should live here
-app.get("/", function rootHandler(req, res) {
-  res.end("Hello world!");
-});
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());

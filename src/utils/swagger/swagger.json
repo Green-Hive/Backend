@@ -11,7 +11,7 @@
     "http"
   ],
   "paths": {
-    "/": {
+    "/debug-sentry": {
       "get": {
         "description": "",
         "responses": {
@@ -21,7 +21,7 @@
         }
       }
     },
-    "/debug-sentry": {
+    "/": {
       "get": {
         "description": "",
         "responses": {
@@ -43,6 +43,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -84,6 +87,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -121,6 +127,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
