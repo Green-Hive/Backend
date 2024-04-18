@@ -72,11 +72,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/hives', checkAuth, hiveRoutes);
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// SENTRY //
 app.get('/debug-sentry', function mainHandler(req, res) {
   throw new Error('My first Sentry error!');
 });
 
-//Sentry request handler
 // The request handler must be the first middleware on the app
 app.use(Sentry.Handlers.requestHandler());
 
@@ -85,13 +85,5 @@ app.use(Sentry.Handlers.tracingHandler());
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
-
-// Optional fallthrough error handler
-// app.use(function onError(err, req, res, next) {
-//   // The error id is attached to `res.sentry` to be returned
-//   // and optionally displayed to the user for support.
-//   res.statusCode = 500;
-//   res.end(res.sentry + "\n");
-// });
 
 export default app;
