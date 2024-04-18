@@ -1,11 +1,16 @@
 import {Request, Response} from 'express';
 import prisma from '../services/prisma.js';
+import * as Sentry from '@sentry/node';
 
 export const postHive = async (req: Request, res: Response) => {
-  const {userId, name, description}: {
-    userId: string,
-    name: string,
-    description: string,
+  const {
+    userId,
+    name,
+    description,
+  }: {
+    userId: string;
+    name: string;
+    description: string;
   } = req.body;
 
   try {
@@ -15,9 +20,13 @@ export const postHive = async (req: Request, res: Response) => {
     return res.status(200).json(hive);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('name')) {
+      Sentry.captureMessage('Name already exists.', {
+        level: 'info',
+        tags: {action: 'postHive'},
+      });
       return res.status(400).json({error: 'Name already exists.'});
     } else {
-      console.error(error);
+      Sentry.captureException(error, {tags: {action: 'postHive'}});
       return res.status(400).json({error: error.message});
     }
   }
@@ -32,7 +41,6 @@ export const postHive = async (req: Request, res: Response) => {
         description: 'my hive description',
     }
   } */
-
 };
 
 export const getAllHives = async (_req: Request, res: Response) => {
@@ -42,7 +50,7 @@ export const getAllHives = async (_req: Request, res: Response) => {
     });
     return res.status(200).json(hives);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, {tags: {action: 'getAllHives'}});
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
@@ -59,7 +67,7 @@ export const getOneHive = async (req: Request, res: Response) => {
     if (!hive) return res.status(404).json({error: 'Hive not found.'});
     return res.status(200).json(hive);
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, {tags: {action: 'getOneHive'}});
     return res.status(500).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
@@ -77,9 +85,13 @@ export const patchHive = async (req: Request, res: Response) => {
     return res.status(200).json(hive);
   } catch (error: any) {
     if (error.code === 'P2002' && error.meta.target.includes('name')) {
+      Sentry.captureMessage('Name already taken.', {
+        level: 'info',
+        tags: {action: 'patchHive'},
+      });
       return res.status(400).json({error: 'Name already taken.'});
     } else {
-      console.error(error);
+      Sentry.captureException(error, {tags: {action: 'patchHive'}});
       return res.status(400).json({error: error.message});
     }
   }
@@ -102,7 +114,7 @@ export const deleteHive = async (req: Request, res: Response) => {
     await prisma.hive.delete({where: {id}});
     res.status(200).json({message: 'Hive deleted.', id});
   } catch (error: any) {
-    console.error(error);
+    Sentry.captureException(error, {tags: {action: 'deleteHive'}});
     return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Hives']

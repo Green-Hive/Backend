@@ -1,12 +1,12 @@
 import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
-    info: {
-        title: 'Green Hive API',
-        description: 'Description'
-    },
-    host: '127.0.0.1:4000',
-    schemes: ['http'],
+  info: {
+    title: 'Green Hive API',
+    description: 'Description',
+  },
+  host: '127.0.0.1:4000',
+  schemes: ['http'],
 };
 
 const outputFile = './swagger.json';
