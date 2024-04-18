@@ -11,6 +11,26 @@
     "http"
   ],
   "paths": {
+    "/debug-sentry": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/auth/me": {
       "get": {
         "tags": [
@@ -23,6 +43,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -64,6 +87,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -101,6 +127,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
