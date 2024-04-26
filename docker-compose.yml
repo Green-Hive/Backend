@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: green_hive_app
+    container_name: DAT
     restart: always
     ports:
       - '4000:4000'
@@ -14,7 +14,7 @@ services:
       - db
 
   db:
-    container_name: green_hive_db
+    container_name: DB
     image: postgres:14.1-alpine
     restart: always
     environment:
