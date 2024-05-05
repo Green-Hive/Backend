@@ -5,7 +5,7 @@ const doc = {
     title: 'Green Hive API',
     description: 'Description',
   },
-  host: '127.0.0.1:4000',
+  host: 'backend:4000',
   schemes: ['http'],
 };
 
