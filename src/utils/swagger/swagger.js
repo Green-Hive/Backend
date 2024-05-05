@@ -5,8 +5,8 @@ const doc = {
     title: 'Green Hive API',
     description: 'Description',
   },
-  host: 'localhost:4000',
-  schemes: ['http'],
+  host: 'greenhiveapi.up.railway.app',
+  schemes: ['https'],
 };
 
 const outputFile = './swagger.json';
