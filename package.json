@@ -14,7 +14,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:seed": "ts-node prisma/seed.js",
     "swagger": "ts-node src/utils/swagger/swagger.js",
     "coverage": "vitest run --coverage --config vitest.config.mts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org green-hive --project gh-backend ./ && sentry-cli sourcemaps upload --org green-hive --project gh-backend ./"
