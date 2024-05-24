@@ -379,6 +379,33 @@
         }
       }
     },
+    "/api/hives/userHive/{id}": {
+      "get": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/hives/{id}": {
       "get": {
         "tags": [
@@ -450,6 +477,131 @@
         }
       },
       "delete": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/{hiveId}/{userId}": {
+      "post": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "hiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "userId*, name* : required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "my hive"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "my hive description"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/{userId}/accessible": {
+      "get": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/hives/{id}/giveAccess": {
+      "patch": {
+        "tags": [
+          "Hives"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/{id}/removeAccess": {
+      "patch": {
         "tags": [
           "Hives"
         ],
