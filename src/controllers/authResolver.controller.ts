@@ -112,7 +112,7 @@ export const login = async (req: Request, res: Response) => {
 
         if (passwordMatch) {
           req.session.userId = user.id;
-          return res.status(200).json(user.id);
+          return res.status(200).json(user);
         } else {
           Sentry.captureMessage('Invalid credentials.', {
             level: 'info',
