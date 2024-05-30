@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import * as Sentry from '@sentry/node';
 
 export const postUser = async (req: Request, res: Response) => {
-  const {name, email, id, password}: {name: string; email: string; id: string; password: string} = req.body;
+  const {name, email, password}: {name: string; email: string; password: string} = req.body;
 
   if (!password) {
     Sentry.captureMessage('Password is required.', {

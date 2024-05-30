@@ -63,11 +63,19 @@ export const postData = async (req: Request, res: Response) => {
     in: 'body',
     required: true,
     schema: {
-        hiveId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
-        temp: 20,
-        hum: 50,
-        weight: 100,
-        inclination: false,
+       hiveId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
+      time: 1630000000,
+      tempBottomLeft: 20,
+      tempTopRight: 20,
+      tempOutside: 20,
+      pressure: 1000,
+      humidityBottomLeft: 50,
+      humidityTopRight: 50,
+      humidityOutside: 50,
+      weight: 1000,
+      magnetic_x: 100,
+      magnetic_y: 100,
+      magnetic_z: 100,
     }
   } */
 };

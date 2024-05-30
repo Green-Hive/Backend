@@ -1,6 +1,17 @@
 import {Router} from 'express';
-import {deleteHive, getAllHives, getOneHive, getUserAcessibleHives, getUserHive, giveUserAccessToHive, linkHiveToUser, patchHive, postHive, removeUserAccessToHive} from "../controllers/hive.controller.js";
-import {postData, getOneData, getAllData, deleteData, deleteAllData} from "../controllers/hiveData.controller.js";
+import {
+  deleteHive,
+  getAllHives,
+  getOneHive,
+  getUserAcessibleHives,
+  getUserHive,
+  giveUserAccessToHive,
+  linkHiveToUser,
+  patchHive,
+  postHive,
+  removeUserAccessToHive,
+} from '../controllers/hive.controller.js';
+import {postData, getOneData, getAllData, deleteData, deleteAllData} from '../controllers/hiveData.controller.js';
 
 const routes = Router();
 
@@ -11,7 +22,7 @@ routes.get('/userHive/:id', getUserHive);
 routes.get('/:id', getOneHive);
 routes.patch('/:id', patchHive);
 routes.delete('/:id', deleteHive);
-routes.post('/:hiveId/:userId', linkHiveToUser)
+routes.post('/:hiveId/:userId', linkHiveToUser);
 routes.get('/:userId/accessible', getUserAcessibleHives);
 routes.patch('/:id/giveAccess', giveUserAccessToHive);
 routes.patch('/:id/removeAccess', removeUserAccessToHive);
