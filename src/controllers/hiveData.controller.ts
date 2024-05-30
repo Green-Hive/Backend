@@ -19,12 +19,38 @@ type HiveDataPayload = {
 };
 
 export const postData = async (req: Request, res: Response) => {
-  const payload: HiveDataPayload = req.body;
+  const {
+    hiveId,
+    time,
+    tempBottomLeft,
+    tempTopRight,
+    tempOutside,
+    pressure,
+    humidityBottomLeft,
+    humidityTopRight,
+    humidityOutside,
+    weight,
+    magnetic_x,
+    magnetic_y,
+    magnetic_z,
+  }: HiveDataPayload = req.body;
 
   try {
     const data = await prisma.hiveData.create({
       data: {
-        ...payload,
+        hiveId,
+        time,
+        tempBottomLeft,
+        tempTopRight,
+        tempOutside,
+        pressure,
+        humidityBottomLeft,
+        humidityTopRight,
+        humidityOutside,
+        weight,
+        magnetic_x,
+        magnetic_y,
+        magnetic_z,
       },
     });
     return res.status(200).json(data);
