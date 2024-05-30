@@ -33,10 +33,18 @@ async function createHiveData(hiveId) {
   const hiveData = await prisma.hiveData.create({
     data: {
       hiveId,
-      temperature: Math.random() * 360,
-      humidity: Math.random() * 100,
-      weight: Math.random() * 1000,
-      inclination: Math.random() > 0.5,
+      time: Math.random() * 360000000,
+      tempBottomLeft: parseFloat((Math.random() * 360).toFixed(2)),
+      tempTopRight: parseFloat((Math.random() * 360).toFixed(2)),
+      tempOutside: parseFloat((Math.random() * 360).toFixed(2)),
+      pressure: parseFloat((Math.random() * 1000).toFixed(2)),
+      humidityBottomLeft: parseFloat((Math.random() * 100).toFixed(2)),
+      humidityTopRight: parseFloat((Math.random() * 100).toFixed(2)),
+      humidityOutside: parseFloat((Math.random() * 100).toFixed(2)),
+      weight: parseFloat((Math.random() * 1000).toFixed(2)),
+      magnetic_x: parseFloat((Math.random() * 100).toFixed(2)),
+      magnetic_y: parseFloat((Math.random() * 100).toFixed(2)),
+      magnetic_z: parseFloat((Math.random() * 100).toFixed(2)),
     },
   });
   console.log({hiveData});

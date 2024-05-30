@@ -40,32 +40,32 @@ model User {
 }
 
 model Hive {
-  id          String     @id @default(uuid())
-  name        String     @unique
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  description String     @default("")
-  userHasAccess Boolean  @default(true)
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  beeData     HiveData[]
+  id            String     @id @default(uuid())
+  name          String     @unique
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  description   String     @default("")
+  userHasAccess Boolean    @default(true)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  beeData       HiveData[]
 }
 
 model HiveData {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  time        DateTime
-  hive        Hive     @relation(fields: [hiveId], references: [id], onDelete: Cascade)
-  hiveId      String
-  tempBottomLeft Float?
-  tempTopRight Float?
-  tempOutside Float?
-  pressure Float?
+  id                 String   @id @default(uuid())
+  createdAt          DateTime @default(now())
+  hive               Hive     @relation(fields: [hiveId], references: [id], onDelete: Cascade)
+  hiveId             String
+  time               Int
+  tempBottomLeft     Float?
+  tempTopRight       Float?
+  tempOutside        Float?
+  pressure           Float?
   humidityBottomLeft Float?
-  humidityTopRight Float?
-  humidityOutside Float?
-  weight Float?
-  magnetic_x Float?
-  magnetic_y Float?
-  magnetic_z Float?
+  humidityTopRight   Float?
+  humidityOutside    Float?
+  weight             Float?
+  magnetic_x         Float?
+  magnetic_y         Float?
+  magnetic_z         Float?
 }

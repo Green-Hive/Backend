@@ -2,24 +2,30 @@ import {Request, Response} from 'express';
 import prisma from '../services/prisma.js';
 import * as Sentry from '@sentry/node';
 
+type HiveDataPayload = {
+  hiveId: string;
+  time: number;
+  tempBottomLeft?: number;
+  tempTopRight?: number;
+  tempOutside?: number;
+  pressure?: number;
+  humidityBottomLeft?: number;
+  humidityTopRight?: number;
+  humidityOutside?: number;
+  weight?: number;
+  magnetic_x?: number;
+  magnetic_y?: number;
+  magnetic_z?: number;
+};
+
 export const postData = async (req: Request, res: Response) => {
-  const {
-    hiveId,
-    temperature,
-    humidity,
-    weight,
-    inclination,
-  }: {
-    hiveId: string;
-    temperature: number;
-    humidity: number;
-    weight: number;
-    inclination: boolean;
-  } = req.body;
+  const payload: HiveDataPayload = req.body;
 
   try {
     const data = await prisma.hiveData.create({
-      data: {hiveId, temperature, humidity, weight, inclination},
+      data: {
+        ...payload,
+      },
     });
     return res.status(200).json(data);
   } catch (error: any) {
