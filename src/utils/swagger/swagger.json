@@ -186,22 +186,17 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
-            "description": "name*, email* , password*: required",
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string",
-                  "example": "my name"
+                  "example": "any"
                 },
                 "email": {
-                  "type": "string",
-                  "example": "example@gmail.com"
+                  "example": "any"
                 },
                 "password": {
-                  "type": "string",
-                  "example": "****"
+                  "example": "any"
                 }
               }
             }
@@ -522,7 +517,7 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "description": "userId*, name* : required",
+            "description": "(userId*, name* ) : required",
             "schema": {
               "type": "object",
               "properties": {
@@ -630,70 +625,6 @@
           "HiveData"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "hiveId": {
-                  "type": "string",
-                  "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
-                },
-                "time": {
-                  "type": "number",
-                  "example": 1630000000
-                },
-                "tempBottomLeft": {
-                  "type": "number",
-                  "example": 20
-                },
-                "tempTopRight": {
-                  "type": "number",
-                  "example": 20
-                },
-                "tempOutside": {
-                  "type": "number",
-                  "example": 20
-                },
-                "pressure": {
-                  "type": "number",
-                  "example": 1000
-                },
-                "humidityBottomLeft": {
-                  "type": "number",
-                  "example": 50
-                },
-                "humidityTopRight": {
-                  "type": "number",
-                  "example": 50
-                },
-                "humidityOutside": {
-                  "type": "number",
-                  "example": 50
-                },
-                "weight": {
-                  "type": "number",
-                  "example": 1000
-                },
-                "magnetic_x": {
-                  "type": "number",
-                  "example": 100
-                },
-                "magnetic_y": {
-                  "type": "number",
-                  "example": 100
-                },
-                "magnetic_z": {
-                  "type": "number",
-                  "example": 100
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"

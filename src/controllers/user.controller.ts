@@ -52,7 +52,7 @@ export const postUser = async (req: Request, res: Response) => {
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
-    description: 'name*, email* , password*: required',
+    description: ('name*, email* , password*) : required',
     schema: {
         name: 'my name',
         email: 'example@gmail.com',

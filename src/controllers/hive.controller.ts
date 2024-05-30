@@ -53,14 +53,14 @@ export const linkHiveToUser = async (req: Request, res: Response) => {
     });
     return res.status(200).json(hive);
   } catch (error: any) {
-      Sentry.captureException(error, {tags: {action: 'postHive'}});
-      return res.status(400).json({error: error.message});
+    Sentry.captureException(error, {tags: {action: 'postHive'}});
+    return res.status(400).json({error: error.message});
   }
   // #swagger.tags = ['Hives']
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
-    description: 'userId*, name* : required',
+    description: '(userId*, name* ) : required',
      schema: {
         userId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
         name: 'my hive',

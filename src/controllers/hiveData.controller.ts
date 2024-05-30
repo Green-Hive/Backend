@@ -62,8 +62,9 @@ export const postData = async (req: Request, res: Response) => {
   /* #swagger.parameters['body'] = {
     in: 'body',
     required: true,
+    description: ('hiveId*, time*) : required',
     schema: {
-       hiveId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
+      hiveId: 'e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e',
       time: 1630000000,
       tempBottomLeft: 20,
       tempTopRight: 20,
