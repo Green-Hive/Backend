@@ -65,7 +65,7 @@ app.use(getCurrentUser);
 // ROUTES //
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/hives', checkAuth, hiveRoutes);
+app.use('/api/hives', hiveRoutes);
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // SENTRY //
