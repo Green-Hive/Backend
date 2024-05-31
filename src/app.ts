@@ -22,11 +22,7 @@ const corsOptions = {
 
 Sentry.init({
   dsn: 'https://111e230f04e40176caf0e4e099808156@o4507072641695744.ingest.de.sentry.io/4507072722501712',
-  integrations: [
-    new Sentry.Integrations.Http({tracing: true}),
-    new Sentry.Integrations.Express({app}),
-    nodeProfilingIntegration(),
-  ],
+  integrations: [new Sentry.Integrations.Http({tracing: true}), new Sentry.Integrations.Express({app}), nodeProfilingIntegration()],
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
   environment: 'develop',
@@ -65,7 +61,7 @@ app.use(getCurrentUser);
 // ROUTES //
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/hives', hiveRoutes);
+app.use('/api/hives', checkAuth, hiveRoutes);
 app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // SENTRY //
