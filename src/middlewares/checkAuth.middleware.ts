@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 
-async function checkAuthentication(req: Request, res: Response, next: NextFunction) {
+export async function checkAuthentication(req: Request, res: Response, next: NextFunction) {
   const {authorization} = req.headers;
   const token = process.env.USER_SECRET_TOKEN;
 
@@ -23,3 +23,5 @@ async function checkAuthentication(req: Request, res: Response, next: NextFuncti
     }
   } else return res.status(401).json({message: 'Unauthorized - User not logged in'});
 }
+
+export default checkAuthentication;
