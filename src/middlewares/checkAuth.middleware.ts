@@ -12,7 +12,7 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
   if (authorization) {
     console.log('Authorization header found');
     try {
-      const tokenMatch = await bcrypt.compare(token!, authorization);
+      const tokenMatch = await bcrypt.compare(token, authorization);
       console.log('Token match:', tokenMatch);
 
       if (tokenMatch) return next();
