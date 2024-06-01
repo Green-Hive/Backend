@@ -9,8 +9,8 @@ export const getLoggedUser = async (req: Request, res: Response) => {
     const {userInfo} = res.locals;
 
     if (req.session.userId) {
-      const {password, ...userInfoWithoutPassword} = userInfo;
-      return res.status(200).json({message: 'User is logged', userInfo: userInfoWithoutPassword});
+      delete userInfo.password;
+      return res.status(200).json({message: 'User is logged', userInfo});
     } else {
       Sentry.captureMessage('User is not logged', {
         level: 'info',
@@ -112,6 +112,7 @@ export const login = async (req: Request, res: Response) => {
 
         if (passwordMatch) {
           req.session.userId = user.id;
+          delete user.password;
           return res.status(200).json(user);
         } else {
           Sentry.captureMessage('Invalid credentials.', {
