@@ -1,7 +1,7 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
 
 type Alert = {
-  type: 'weight' | 'tilt' | 'temperature';
+  type: 'weight' | 'tilt' | 'temperature' | 'sensor';
   message: string;
   severity: 'low' | 'medium' | 'high' | '-';
 };
@@ -62,6 +62,20 @@ function getTemperatureAlert(data: HiveDataPayload): Alert | null {
 
 export function checkAlerts(data: HiveDataPayload) {
   const alerts: Alert[] = [];
+
+  // Vérification du fonctionnement des capteurs
+  for (const key in data) {
+    if (key !== 'hiveId' && key !== 'id') {
+      const sensorData = data[key as keyof HiveDataPayload];
+      if (sensorData === undefined || sensorData === null || (typeof sensorData === 'number' && isNaN(sensorData))) {
+        alerts.push({
+          type: 'sensor',
+          message: `Sensor '${key}' is not sending valid data`,
+          severity: 'high',
+        });
+      }
+    }
+  }
 
   const weightAlert = getWeightAlert(data);
   if (weightAlert) alerts.push(weightAlert);
