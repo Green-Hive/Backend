@@ -1,8 +1,9 @@
 import {Request, Response} from 'express';
 import prisma from '../services/prisma.js';
 import * as Sentry from '@sentry/node';
+import {checkAlerts} from '../services/alertsHandler.js';
 
-type HiveDataPayload = {
+export type HiveDataPayload = {
   hiveId: string;
   time: number;
   tempBottomLeft?: number;
@@ -53,6 +54,7 @@ export const postData = async (req: Request, res: Response) => {
         magnetic_z,
       },
     });
+    checkAlerts(data);
     return res.status(200).json(data);
   } catch (error: any) {
     Sentry.captureException(error, {tags: {action: 'postData'}});

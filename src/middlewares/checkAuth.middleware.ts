@@ -5,9 +5,7 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
   const {authorization} = req.headers;
   const token = process.env.USER_SECRET_TOKEN;
 
-  if (req.session && req.session.userId) {
-    return next();
-  }
+  if (req.session && req.session.userId) return next();
 
   if (authorization) {
     console.log('Authorization header found');
