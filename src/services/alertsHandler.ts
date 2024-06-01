@@ -1,70 +1,77 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
 
-// let lastData: { [key: string]: HiveDataPayload } = {};
-// let lastUpdateTime: { [key: string]: number } = {};
+type Alert = {
+  type: 'weight' | 'tilt' | 'temperature';
+  message: string;
+  severity: 'low' | 'medium' | 'high' | '-';
+};
+
+function getWeightAlert(data: HiveDataPayload): Alert | null {
+  const weight = data.weight ?? 0;
+
+  if (weight > 40000) return {type: 'weight', message: 'Weight is greater than 40kg', severity: 'high'};
+  if (weight > 30000) return {type: 'weight', message: 'Weight is greater than 30kg', severity: 'medium'};
+  if (weight > 20000) return {type: 'weight', message: 'Weight is greater than 20kg', severity: 'low'};
+  return null;
+}
+
+function getTiltAlert(data: HiveDataPayload): Alert | null {
+  const isTilted = Math.abs(data.magnetic_x ?? 0) > 1000 || Math.abs(data.magnetic_y ?? 0) > 1000 || Math.abs(data.magnetic_z ?? 0) > 1000;
+  if (isTilted) return {type: 'tilt', message: 'Hive is tilted', severity: '-'};
+  return null;
+}
+
+function getTemperatureAlert(data: HiveDataPayload): Alert | null {
+  const tempBottomLeft = data.tempBottomLeft ?? 0;
+  const tempTopRight = data.tempTopRight ?? 0;
+  const tempOutside = data.tempOutside ?? 0;
+
+  // Vérification des températures du couvain (33°C - 36°C)
+  if (tempBottomLeft < 33 || tempBottomLeft > 36 || tempTopRight < 33 || tempTopRight > 36) {
+    return {
+      type: 'temperature',
+      message: 'Couvain temperature is outside 33°C - 36°C range',
+      severity: 'high',
+    };
+  }
+  // Vérification des températures extérieures
+  if (tempOutside > 30) {
+    return {
+      type: 'temperature',
+      message: 'Outside temperature is greater than 30°C, indicating queen laying extension',
+      severity: 'medium',
+    };
+  }
+  if (tempOutside < 14) {
+    return {
+      type: 'temperature',
+      message: 'Outside temperature has dropped below 14°C',
+      severity: 'high',
+    };
+  }
+  // Vérification des températures critiques en hiver
+  if (tempBottomLeft < 18 || tempTopRight < 18) {
+    return {
+      type: 'temperature',
+      message: 'Internal temperature is below 18°C, indicating a serious issue',
+      severity: 'high',
+    };
+  }
+  return null;
+}
 
 export function checkAlerts(data: HiveDataPayload) {
-  const alerts: string[] = [];
+  const alerts: Alert[] = [];
 
-  if ((data.weight ?? 0) > 40000) alerts.push('Weight is greater than 40kg');
+  const weightAlert = getWeightAlert(data);
+  if (weightAlert) alerts.push(weightAlert);
 
+  const tiltAlert = getTiltAlert(data);
+  if (tiltAlert) alerts.push(tiltAlert);
 
-  // // Check if the hive is tilted
-  // const isTilted = Math.abs(data.magnetic_x ?? 0) > 1000 || Math.abs(data.magnetic_y ?? 0) > 1000 || Math.abs(data.magnetic_z ?? 0) > 1000;
-  // if (isTilted) {
-  //   alerts.push('Hive is tilted');
-  // }
-  //
-  // // Check for NaN or null values
-  // const currentTime = data.time;
-  // lastUpdateTime[data.time] = currentTime;
-  //
-  // for (const key in data) {
-  //   if (data[key as keyof HiveDataPayload] === undefined || isNaN(data[key as keyof HiveDataPayload] as number)) {
-  //     const lastTime = lastUpdateTime[hiveData.time];
-  //     if (currentTime - lastTime > 60000) {
-  //       // 1 minute
-  //       alerts.push(`${key} sensor doesn't send any value for more than a minute`);
-  //     }
-  //   }
-  // }
-
-  // Check if weight is greater than 40kg
-
-
-  // // Check for sudden temperature rise
-  // const lastHiveData = lastData[hiveData.hiveId];
-  // if (lastHiveData) {
-  //   const tempRise =
-  //     Math.abs((data.tempBottomLeft ?? 0) - (lastHiveData.tempBottomLeft ?? 0)) > 10 ||
-  //     Math.abs((data.tempTopRight ?? 0) - (lastHiveData.tempTopRight ?? 0)) > 10 ||
-  //     Math.abs((data.tempOutside ?? 0) - (lastHiveData.tempOutside ?? 0)) > 10;
-  //   if (tempRise) {
-  //     alerts.push('Sudden temperature rise');
-  //   }
-  // }
-
-  // // Update the last data
-  // lastData[hiveData.hiveId] = hiveData;
+  const temperatureAlert = getTemperatureAlert(data);
+  if (temperatureAlert) alerts.push(temperatureAlert);
 
   console.log('Alerts:', alerts);
   // return alerts;
-};
-
-// app.post('/data', (req: Request, res: Response) => {
-//   const hiveData: HiveData = req.body;
-
-//   // Check for alerts
-//   const alerts = checkAlerts(hiveData);
-
-//   if (alerts.length > 0) {
-//     // Send alerts to frontend (assuming there's a mechanism like WebSocket or another endpoint to notify the frontend)
-//     console.log(`Alerts for hive ${hiveData.hive_id}:`, alerts);
-//   }
-
-//   res.status(200).send('Data received');
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+}
