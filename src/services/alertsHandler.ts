@@ -1,10 +1,18 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
+import wss from './webSocketServer.js';
 
 type Alert = {
   type: 'weight' | 'tilt' | 'temperature' | 'sensor';
   message: string;
   severity: 'low' | 'medium' | 'high' | '-';
 };
+
+function sendAlert(alert: Alert) {
+  console.log('Sending alert:', alert);
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) client.send(JSON.stringify(alert));
+  });
+}
 
 function getWeightAlert(data: HiveDataPayload): Alert | null {
   const weight = data.weight ?? 0;
@@ -86,6 +94,5 @@ export function checkAlerts(data: HiveDataPayload) {
   const temperatureAlert = getTemperatureAlert(data);
   if (temperatureAlert) alerts.push(temperatureAlert);
 
-  console.log('Alerts:', alerts);
-  // return alerts;
+  if (alerts.length > 0) sendAlert(weightAlert);
 }
