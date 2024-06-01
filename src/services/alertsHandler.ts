@@ -7,7 +7,7 @@ type Alert = {
   severity: 'low' | 'medium' | 'high' | '-';
 };
 
-function sendAlert(alert: Alert) {
+function sendAlert(alert: Alert[]) {
   console.log('Sending alert:', alert);
   wss.clients.forEach((client) => {
     if (client.readyState === 1) client.send(JSON.stringify(alert));
@@ -94,5 +94,5 @@ export function checkAlerts(data: HiveDataPayload) {
   const temperatureAlert = getTemperatureAlert(data);
   if (temperatureAlert) alerts.push(temperatureAlert);
 
-  if (alerts.length > 0) sendAlert(weightAlert);
+  if (alerts.length > 0) sendAlert(alerts);
 }
