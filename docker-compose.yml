@@ -1,16 +1,16 @@
 services:
-  #  backend:
-  #    build:
-  #      context: .
-  #      dockerfile: Dockerfile
-  #    container_name: green_hive_app
-  #    restart: always
-  #    ports:
-  #      - '4000:4000'
-  #    env_file:
-  #      - .env
-  #    depends_on:
-  #      - db
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: green_hive_app
+    restart: always
+    ports:
+      - '4000:4000'
+    env_file:
+      - .env
+    depends_on:
+      - db
 
   db:
     container_name: green_hive_db
