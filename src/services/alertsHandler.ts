@@ -68,8 +68,13 @@ function getTemperatureAlert(data: HiveDataPayload): Alert | null {
   return null;
 }
 
-export function checkAlerts(data: HiveDataPayload) {
+export function checkAlerts(data: HiveDataPayload, user: any) {
   const alerts: Alert[] = [];
+
+  //Verification si la ruche appartient à l'utilisateur
+  if (!user) return;
+  const userHive = user.hive.find((hive: any) => hive.id === data.hiveId);
+  if (!userHive) return;
 
   // Vérification du fonctionnement des capteurs
   for (const key in data) {

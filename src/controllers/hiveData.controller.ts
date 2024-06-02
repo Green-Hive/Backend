@@ -20,6 +20,7 @@ export type HiveDataPayload = {
 };
 
 export const postData = async (req: Request, res: Response) => {
+  const user = res.locals.userInfo;
   const {
     hiveId,
     time,
@@ -54,7 +55,7 @@ export const postData = async (req: Request, res: Response) => {
         magnetic_z,
       },
     });
-    checkAlerts(data);
+    checkAlerts(data, user);
     return res.status(200).json(data);
   } catch (error: any) {
     Sentry.captureException(error, {tags: {action: 'postData'}});
