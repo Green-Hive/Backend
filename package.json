@@ -58,6 +58,7 @@
     "figlet": "^1.7.0",
     "google-auth-library": "^9.2.0",
     "pg": "^8.11.3",
+    "pusher": "^5.2.0",
     "swagger-ui-express": "^5.0.0",
     "terminal-link": "^3.0.0",
     "ws": "^8.17.0"
