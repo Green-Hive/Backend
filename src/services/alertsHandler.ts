@@ -1,6 +1,5 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
 import pusher from './webSocketServer.js';
-// import wss from './webSocketServer.js';
 
 type Alert = {
   type: 'weight' | 'tilt' | 'temperature' | 'sensor';
@@ -11,9 +10,6 @@ type Alert = {
 function sendAlert(alert: Alert[]) {
   console.log('Sending alert:', alert);
   pusher.trigger('my-channel', 'my-event', alert);
-  //   wss.clients.forEach((client) => {
-  //     if (client.readyState === 1) client.send(JSON.stringify(alert));
-  //   });
 }
 
 function getWeightAlert(data: HiveDataPayload): Alert | null {
