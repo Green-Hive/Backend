@@ -1,6 +1,6 @@
 import {WebSocketServer} from 'ws';
 
-const wss = new WebSocketServer({port: 443});
+const wss = new WebSocketServer({port: Number(process.env.SESSION_SECRET)});
 
 wss.on('connection', (ws) => {
   console.log('WebSocket client connected');
