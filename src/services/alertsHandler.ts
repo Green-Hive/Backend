@@ -15,36 +15,24 @@ function sendAlert(alert: Alert[]) {
 }
 
 async function createOrUpdateAlert(hiveId: string, alert: Alert) {
-  if (alert.type === AlertType.WEIGHT) {
-    const existingAlert = await prisma.alert.findFirst({
-      where: {
-        hiveId,
-        type: alert.type,
-      },
-    });
+  const existingAlert = await prisma.alert.findFirst({
+    where: {
+      hiveId,
+      type: alert.type,
+    },
+  });
 
-    if (existingAlert) {
-      if (existingAlert.message !== alert.message || existingAlert.severity !== alert.severity) {
-        await prisma.alert.update({
-          where: {id: existingAlert.id},
-          data: {
-            message: alert.message,
-            severity: alert.severity,
-          },
-        });
-      }
-    } else {
-      await prisma.alert.create({
+  if (existingAlert) {
+    if (existingAlert.message !== alert.message || existingAlert.severity !== alert.severity) {
+      await prisma.alert.update({
+        where: {id: existingAlert.id},
         data: {
-          hiveId,
-          type: alert.type,
           message: alert.message,
           severity: alert.severity,
         },
       });
     }
   } else {
-    // For other types of alerts, just create a new alert
     await prisma.alert.create({
       data: {
         hiveId,
