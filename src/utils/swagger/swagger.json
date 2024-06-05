@@ -805,6 +805,127 @@
           }
         }
       }
+    },
+    "/api/hives/alert/": {
+      "post": {
+        "tags": [
+          "Alerts"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "hiveId*, type*, message* : required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hiveId": {
+                  "type": "string",
+                  "example": "e0b0e7e0-1c5e-4b1e-9b0e-7e0e1c5e4b1e"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "warning"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Alert message"
+                },
+                "severity": {
+                  "type": "string",
+                  "example": "high"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/hives/alert/all/{hiveId}": {
+      "get": {
+        "tags": [
+          "Alerts"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "hiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Alerts"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "hiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/hives/alert/{id}": {
+      "delete": {
+        "tags": [
+          "Alerts"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
     }
   }
 }

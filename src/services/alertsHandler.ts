@@ -1,10 +1,11 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
 import pusher from './webSocketServer.js';
+import {AlertSeverity, AlertType} from '@prisma/client';
 
 type Alert = {
-  type: 'weight' | 'tilt' | 'temperature' | 'sensor';
+  type: AlertType;
   message: string;
-  severity: 'low' | 'medium' | 'high' | '-';
+  severity: AlertSeverity;
 };
 
 function sendAlert(alert: Alert[]) {
@@ -15,15 +16,30 @@ function sendAlert(alert: Alert[]) {
 function getWeightAlert(data: HiveDataPayload): Alert | null {
   const weight = data.weight ?? 0;
 
-  if (weight > 40000) return {type: 'weight', message: 'Weight is greater than 40kg', severity: 'high'};
-  if (weight > 30000) return {type: 'weight', message: 'Weight is greater than 30kg', severity: 'medium'};
-  if (weight > 20000) return {type: 'weight', message: 'Weight is greater than 20kg', severity: 'low'};
+  if (weight > 40000)
+    return {
+      type: AlertType.WEIGHT,
+      message: 'Weight is greater than 40kg',
+      severity: AlertSeverity.CRITICAL,
+    };
+  if (weight > 30000)
+    return {
+      type: AlertType.WEIGHT,
+      message: 'Weight is greater than 30kg',
+      severity: AlertSeverity.WARNING,
+    };
+  if (weight > 20000)
+    return {
+      type: AlertType.WEIGHT,
+      message: 'Weight is greater than 20kg',
+      severity: AlertSeverity.INFO,
+    };
   return null;
 }
 
 function getTiltAlert(data: HiveDataPayload): Alert | null {
   const isTilted = Math.abs(data.magnetic_x ?? 0) > 1000 || Math.abs(data.magnetic_y ?? 0) > 1000 || Math.abs(data.magnetic_z ?? 0) > 1000;
-  if (isTilted) return {type: 'tilt', message: 'Hive is tilted', severity: '-'};
+  if (isTilted) return {type: AlertType.TILT, message: 'Hive is tilted', severity: AlertSeverity.WARNING};
   return null;
 }
 
@@ -35,32 +51,32 @@ function getTemperatureAlert(data: HiveDataPayload): Alert | null {
   // Vérification des températures du couvain (33°C - 36°C)
   if (tempBottomLeft < 33 || tempBottomLeft > 36 || tempTopRight < 33 || tempTopRight > 36) {
     return {
-      type: 'temperature',
+      type: AlertType.TEMP,
       message: 'Couvain temperature is outside 33°C - 36°C range',
-      severity: 'high',
+      severity: AlertSeverity.WARNING,
     };
   }
   // Vérification des températures extérieures
   if (tempOutside > 30) {
     return {
-      type: 'temperature',
+      type: AlertType.TEMP,
       message: 'Outside temperature is greater than 30°C, indicating queen laying extension',
-      severity: 'medium',
+      severity: AlertSeverity.WARNING,
     };
   }
   if (tempOutside < 14) {
     return {
-      type: 'temperature',
+      type: AlertType.TEMP,
       message: 'Outside temperature has dropped below 14°C',
-      severity: 'high',
+      severity: AlertSeverity.CRITICAL,
     };
   }
   // Vérification des températures critiques en hiver
   if (tempBottomLeft < 18 || tempTopRight < 18) {
     return {
-      type: 'temperature',
+      type: AlertType.TEMP,
       message: 'Internal temperature is below 18°C, indicating a serious issue',
-      severity: 'high',
+      severity: AlertSeverity.CRITICAL,
     };
   }
   return null;
@@ -80,9 +96,9 @@ export function checkAlerts(data: HiveDataPayload, user: any) {
       const sensorData = data[key as keyof HiveDataPayload];
       if (sensorData === undefined || sensorData === null || (typeof sensorData === 'number' && isNaN(sensorData))) {
         alerts.push({
-          type: 'sensor',
+          type: AlertType.SENSOR,
           message: `Sensor '${key}' is not sending valid data`,
-          severity: 'high',
+          severity: AlertSeverity.CRITICAL,
         });
       }
     }
