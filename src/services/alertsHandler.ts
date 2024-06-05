@@ -15,16 +15,36 @@ function sendAlert(alert: Alert[]) {
 }
 
 async function createOrUpdateAlert(hiveId: string, alert: Alert) {
-  const existingAlert = await prisma.alert.findFirst({
-    where: {
-      hiveId,
-      type: alert.type,
-      message: alert.message,
-      severity: alert.severity,
-    },
-  });
+  if (alert.type === AlertType.WEIGHT) {
+    const existingAlert = await prisma.alert.findFirst({
+      where: {
+        hiveId,
+        type: alert.type,
+      },
+    });
 
-  if (!existingAlert) {
+    if (existingAlert) {
+      if (existingAlert.message !== alert.message || existingAlert.severity !== alert.severity) {
+        await prisma.alert.update({
+          where: {id: existingAlert.id},
+          data: {
+            message: alert.message,
+            severity: alert.severity,
+          },
+        });
+      }
+    } else {
+      await prisma.alert.create({
+        data: {
+          hiveId,
+          type: alert.type,
+          message: alert.message,
+          severity: alert.severity,
+        },
+      });
+    }
+  } else {
+    // For other types of alerts, just create a new alert
     await prisma.alert.create({
       data: {
         hiveId,
@@ -112,7 +132,7 @@ export async function checkAlerts(data: HiveDataPayload, user: any) {
   for (const key in data) {
     if (key !== 'hiveId' && key !== 'id') {
       const sensorData = data[key as keyof HiveDataPayload];
-      if (sensorData === undefined || sensorData === null || (typeof sensorData === 'number' && isNaN(sensorData))) {
+      if (sensorData === undefined || sensorData === null) {
         alerts.push({
           type: AlertType.SENSOR,
           message: `Sensor '${key}' is not sending valid data`,
