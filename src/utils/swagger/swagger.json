@@ -904,6 +904,51 @@
       }
     },
     "/api/hives/alert/{id}": {
+      "patch": {
+        "tags": [
+          "Alerts"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "type, severity, message : required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "warning"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Alert message"
+                },
+                "severity": {
+                  "type": "string",
+                  "example": "high"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "delete": {
         "tags": [
           "Alerts"

@@ -1,6 +1,7 @@
 import {HiveDataPayload} from 'src/controllers/hiveData.controller.js';
 import pusher from './webSocketServer.js';
 import {AlertSeverity, AlertType} from '@prisma/client';
+import prisma from './prisma.js';
 
 type Alert = {
   type: AlertType;
@@ -11,6 +12,28 @@ type Alert = {
 function sendAlert(alert: Alert[]) {
   console.log('Sending alert:', alert);
   pusher.trigger('my-channel', 'my-event', alert);
+}
+
+async function createOrUpdateAlert(hiveId: string, alert: Alert) {
+  const existingAlert = await prisma.alert.findFirst({
+    where: {
+      hiveId,
+      type: alert.type,
+      message: alert.message,
+      severity: alert.severity,
+    },
+  });
+
+  if (!existingAlert) {
+    await prisma.alert.create({
+      data: {
+        hiveId,
+        type: alert.type,
+        message: alert.message,
+        severity: alert.severity,
+      },
+    });
+  }
 }
 
 function getWeightAlert(data: HiveDataPayload): Alert | null {
@@ -82,13 +105,8 @@ function getTemperatureAlert(data: HiveDataPayload): Alert | null {
   return null;
 }
 
-export function checkAlerts(data: HiveDataPayload, user: any) {
+export async function checkAlerts(data: HiveDataPayload, user: any) {
   const alerts: Alert[] = [];
-
-  //Verification si la ruche appartient à l'utilisateur
-  if (!user) return;
-  const userHive = user.hive.find((hive: any) => hive.id === data.hiveId);
-  if (!userHive) return;
 
   // Vérification du fonctionnement des capteurs
   for (const key in data) {
@@ -98,7 +116,7 @@ export function checkAlerts(data: HiveDataPayload, user: any) {
         alerts.push({
           type: AlertType.SENSOR,
           message: `Sensor '${key}' is not sending valid data`,
-          severity: AlertSeverity.CRITICAL,
+          severity: AlertSeverity.INFO,
         });
       }
     }
@@ -112,6 +130,16 @@ export function checkAlerts(data: HiveDataPayload, user: any) {
 
   const temperatureAlert = getTemperatureAlert(data);
   if (temperatureAlert) alerts.push(temperatureAlert);
+
+  // Crée ou met à jour les alertes si elles n'existent pas ou si elles changent
+  for (const alert of alerts) {
+    await createOrUpdateAlert(data.hiveId, alert);
+  }
+
+  //Verification si la ruche appartient à l'utilisateur
+  if (!user) return;
+  const userHive = user.hive.find((hive: any) => hive.id === data.hiveId);
+  if (!userHive) return;
 
   if (alerts.length > 0) sendAlert(alerts);
 }

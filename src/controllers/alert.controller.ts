@@ -54,6 +54,32 @@ export const getAllAlert = async (req: Request, res: Response) => {
   // #swagger.tags = ['Alerts']
 };
 
+export const patchAlert = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  const {type, severity, message} = req.body;
+
+  try {
+    const alert = await prisma.alert.update({
+      where: {id},
+      data: {type, severity, message},
+    });
+    return res.status(200).json(alert);
+  } catch (error: any) {
+    return res.status(400).json({error: error.message});
+  }
+  // #swagger.tags = ['Alerts']
+  /* #swagger.parameters['body'] = {
+    in: 'body',
+    required: true,
+    description: 'type, severity, message : required',
+    schema: {
+      type: 'warning',
+      message: 'Alert message',
+      severity: 'high'
+    }
+  } */
+};
+
 export const deleteAlert = async (req: Request, res: Response) => {
   const {id} = req.params;
 
