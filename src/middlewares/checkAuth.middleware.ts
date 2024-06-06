@@ -10,30 +10,29 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
 
   if (req.session && req.session.userId) return next();
 
-  if (authorization) {
-    try {
-      const tokenMatch = await bcrypt.compare(token, authorization);
+  if (!authorization) return res.status(401).json({message: 'Unauthorized - User not logged in'});
 
-      console.log('Token match:', tokenMatch);
-      if (tokenMatch) {
-        try {
-          const NTM = await prisma.user.findUnique({
-            where: {id: user as string},
-            include: {hive: true},
-          });
-          console.log('NTMMMMMMMMMMMMMMMMMMMM', NTM);
-          res.locals.userInfo = NTM;
-          console.log('User info apres find:', res.locals.userInfo);
-          return next();
-        } catch (error) {
-          console.error('Error when fetching user from database', error);
-        }
-      } else return res.status(401).json({message: 'Unauthorized - Invalid token'});
-    } catch (error) {
-      console.error('Error comparing tokens:', error);
-      return res.status(500).json({message: 'Internal Server Error'});
-    }
-  } else return res.status(401).json({message: 'Unauthorized - User not logged in'});
+  try {
+    const tokenMatch = await bcrypt.compare(token, authorization);
+
+    if (!tokenMatch) return res.status(401).json({message: 'Unauthorized - Invalid token'});
+    console.log('Token match:', tokenMatch);
+
+    const getUserInfo = await prisma.user.findUnique({
+      where: {id: user as string},
+      include: {hive: true},
+    });
+
+    if (!getUserInfo) return res.status(401).json({message: 'Unauthorized - User not found'});
+
+    console.log('User info:', getUserInfo);
+
+    res.locals.userInfo = getUserInfo;
+    return next();
+  } catch (error) {
+    console.error('Error in authentication middleware:', error);
+    return res.status(500).json({message: 'Internal Server Error'});
+  }
 }
 
 export default checkAuthentication;
