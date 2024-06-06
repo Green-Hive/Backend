@@ -55,6 +55,8 @@ export const postData = async (req: Request, res: Response) => {
         magnetic_z,
       },
     });
+    console.log('userDANS HIVE DATA: ', user);
+    console.log('Data QUE PIERRE ENVOI:', data);
     checkAlerts(data, user);
     return res.status(200).json(data);
   } catch (error: any) {
