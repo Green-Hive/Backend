@@ -17,10 +17,12 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
       console.log('Token match:', tokenMatch);
       if (tokenMatch) {
         try {
-          res.locals.userInfo = await prisma.user.findUnique({
+          const NTM = await prisma.user.findUnique({
             where: {id: user as string},
             include: {hive: true},
           });
+          console.log('NTMMMMMMMMMMMMMMMMMMMM', NTM);
+          res.locals.userInfo = NTM;
           console.log('User info apres find:', res.locals.userInfo);
           return next();
         } catch (error) {
