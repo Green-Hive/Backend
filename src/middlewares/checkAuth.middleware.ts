@@ -21,10 +21,10 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
             where: {id: user as string},
             include: {hive: true},
           });
+          return next();
         } catch (error) {
           console.error('Error when fetching user from database', error);
         }
-        return next();
       } else return res.status(401).json({message: 'Unauthorized - Invalid token'});
     } catch (error) {
       console.error('Error comparing tokens:', error);
