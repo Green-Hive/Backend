@@ -12,6 +12,8 @@ async function getCurrentUser(req: Request, res: Response, next: NextFunction): 
 
   if (userId) {
     try {
+      if (res.locals.userInfo) return next();
+
       res.locals.userInfo = await prisma.user.findUnique({
         where: {id: userId},
         include: {hive: true},
