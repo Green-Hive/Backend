@@ -21,6 +21,7 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
             where: {id: user as string},
             include: {hive: true},
           });
+          console.log('User info apres find:', res.locals.userInfo);
           return next();
         } catch (error) {
           console.error('Error when fetching user from database', error);
