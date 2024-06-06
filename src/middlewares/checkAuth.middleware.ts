@@ -30,9 +30,9 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
       return res.status(401).json({message: 'Unauthorized - User not found'});
     }
 
-    console.log('User info:', getUserInfo);
+    console.log('USERTOKENINFO:', getUserInfo);
 
-    res.locals.userId = getUserInfo;
+    res.locals.userTokenInfo = getUserInfo;
     return next();
   } catch (error) {
     console.error('Error in authentication middleware:', error);

@@ -20,7 +20,7 @@ export type HiveDataPayload = {
 };
 
 export const postData = async (req: Request, res: Response) => {
-  const user = res.locals.userInfo;
+  const user = res.locals.userTokenInfo;
   const {
     hiveId,
     time,
