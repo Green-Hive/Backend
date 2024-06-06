@@ -6,6 +6,9 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
   const {authorization, user} = req.headers;
   const token = process.env.USER_SECRET_TOKEN;
 
+  console.log('authorization:', authorization);
+  console.log('userIdFromIOT:', user);
+
   if (req.session && req.session.userId) {
     return next();
   }
@@ -29,9 +32,6 @@ export async function checkAuthentication(req: Request, res: Response, next: Nex
     if (!getUserInfo) {
       return res.status(401).json({message: 'Unauthorized - User not found'});
     }
-
-    console.log('USERTOKENINFO:', getUserInfo);
-
     res.locals.userTokenInfo = getUserInfo;
     return next();
   } catch (error) {
