@@ -47,7 +47,7 @@ async function createOrUpdateAlert(hiveId: string, alert: Alert) {
 function getWeightAlert(data: HiveDataPayload): Alert | null {
   const weight = data.weight ?? 0;
 
-  if (weight > 40000)
+  if (weight > 13000)
     return {
       type: AlertType.WEIGHT,
       message: 'Weight is greater than 40kg',
@@ -59,7 +59,7 @@ function getWeightAlert(data: HiveDataPayload): Alert | null {
       message: 'Weight is greater than 30kg',
       severity: AlertSeverity.WARNING,
     };
-  if (weight > 6000)
+  if (weight > 4000)
     return {
       type: AlertType.WEIGHT,
       message: 'Weight is greater than 20kg',
