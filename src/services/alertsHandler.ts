@@ -53,13 +53,13 @@ function getWeightAlert(data: HiveDataPayload): Alert | null {
       message: 'Weight is greater than 40kg',
       severity: AlertSeverity.CRITICAL,
     };
-  if (weight > 30000)
+  if (weight > 2000)
     return {
       type: AlertType.WEIGHT,
       message: 'Weight is greater than 30kg',
       severity: AlertSeverity.WARNING,
     };
-  if (weight > 20000)
+  if (weight > 0)
     return {
       type: AlertType.WEIGHT,
       message: 'Weight is greater than 20kg',
@@ -69,7 +69,7 @@ function getWeightAlert(data: HiveDataPayload): Alert | null {
 }
 
 function getTiltAlert(data: HiveDataPayload): Alert | null {
-  const isTilted = Math.abs(data.magnetic_x ?? 0) > 1000 || Math.abs(data.magnetic_y ?? 0) > 1000 || Math.abs(data.magnetic_z ?? 0) > 1000;
+  const isTilted = Math.abs(data.magnetic_x ?? 0) > 1000 || Math.abs(data.magnetic_y ?? 0) > 1000 || Math.abs(data.magnetic_z ?? 0) > 2000;
   if (isTilted) return {type: AlertType.TILT, message: 'Hive is tilted', severity: AlertSeverity.WARNING};
   return null;
 }
