@@ -59,7 +59,7 @@ function getWeightAlert(data: HiveDataPayload): Alert | null {
       message: 'Weight is greater than 30kg',
       severity: AlertSeverity.WARNING,
     };
-  if (weight > 3000)
+  if (weight > 6000)
     return {
       type: AlertType.WEIGHT,
       message: 'Weight is greater than 20kg',
